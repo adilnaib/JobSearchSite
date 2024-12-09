@@ -6,8 +6,8 @@ public class Employer {
     private String empAddress;
     private double empContact;
     private String empEmail;
-    private String username;
-    private String empname;
+    private String userName;
+    private String empName;
 
     public String getEmpOrg() {
         return empOrg;
@@ -38,19 +38,19 @@ public class Employer {
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUsername(String userName) {
+        this.userName = userName;
     }
 
     public String getEmpname() {
-        return empname;
+        return empName;
     }
 
-    public void setEmpname(String empname) {
-        this.empname = empname;
+    public void setEmpname(String empName) {
+        this.empName = empName;
     }
 
     public void setEmpOrg(String empOrg) {
