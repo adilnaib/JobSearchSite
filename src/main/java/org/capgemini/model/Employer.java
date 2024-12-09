@@ -1,6 +1,5 @@
 package org.capgemini.model;
 
-import sun.jvm.hotspot.ui.tree.CStringTreeNodeAdapter;
 
 public class Employer {
     private String empOrg;
