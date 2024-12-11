@@ -15,6 +15,7 @@ public class Employer {
     private String empEmail;
     private String userName;
     private String empName;
+
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Job> jobs;
 
