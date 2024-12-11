@@ -75,6 +75,8 @@ public class EmployerService {
         application.setStatus(status);
         return jobApplicationRepository.save(application);
     }
-
+    public Job viewJob(Long jobId) {
+        return jobRepository.findByJobId(jobId);
+    }
 	
 }
