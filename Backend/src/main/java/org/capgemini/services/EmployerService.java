@@ -66,7 +66,7 @@ public class EmployerService {
     	return jobApplicationRepository.findSeekerByJobId(jobId);
     }
     
-    public List<Seeker> searchJobSeekerBySkillSet( String skillset){
+    public List<Seeker> searchJobSeekerBySkillSet(String skillset){
     	return jobApplicationRepository.findSeekerBySkillset(skillset);
     }
     public JobApplication updateApplicationStatus(Long applicationId, String status) {
