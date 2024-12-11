@@ -69,4 +69,9 @@ public class EmployerController {
             @RequestParam String status) {
         return ResponseEntity.ok(employerService.updateApplicationStatus(applicationId, status));
     }
+
+    @GetMapping("/jobs/{jobId}")
+    public Job viewJob(@PathVariable Long jobId) {
+        return employerService.viewJob(jobId);
+    }
 }
