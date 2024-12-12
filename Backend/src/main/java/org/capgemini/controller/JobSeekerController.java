@@ -59,6 +59,25 @@ public class JobSeekerController {
         return jobSeekerService.searchJobsBySkills(requiredSkills);
     }
 
+    //Get Specific job details (basically when jobseeker clicks on a job)
+    @GetMapping("/getJobDetails/{jobId}")
+    @ResponseBody
+    public Job getJobDetails(@PathVariable Long jobId) {
+        return jobSeekerService.getJobDetails(jobId);
+    }
 
+    //Apply for a job
+    @PostMapping("/applyForJob/{jobId}/{seekerId}")
+    @ResponseBody
+    public String applyForJob(@PathVariable Long jobId, @PathVariable Long seekerId) {
+        return jobSeekerService.applyForJob(jobId, seekerId);
+    }
+
+    //Delete a job application
+    @DeleteMapping("/deleteJobApplication/{applicationId}")
+    @ResponseBody
+    public void deleteJobApplication(@PathVariable Long applicationId) {
+    	jobSeekerService.deleteJobApplication(applicationId);
+    }
 
 }
