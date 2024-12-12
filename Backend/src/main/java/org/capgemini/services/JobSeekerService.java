@@ -72,4 +72,33 @@ public class JobSeekerService {
     public void deleteJobApplication(Long applicationId) {
         jobApplicationRepository.deleteById(applicationId);
     }
+
+    public String addFavouriteJob(Long jobId, Long seekerId) {
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
+        Seeker seeker = jobSeekerRepository.findById(seekerId).orElseThrow(() -> new RuntimeException("Seeker not found"));
+
+        seeker.getFavouriteJobs().add(job);
+        jobSeekerRepository.save(seeker);
+
+        return "Added job to favourites: " + job.getJobTitle();
+    }
+
+    public String removeFavouriteJob(Long jobId, Long seekerId) {
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
+        Seeker seeker = jobSeekerRepository.findById(seekerId).orElseThrow(() -> new RuntimeException("Seeker not found"));
+
+        seeker.getFavouriteJobs().remove(job);
+        jobSeekerRepository.save(seeker);
+
+        return "Removed job from favourites: " + job.getJobTitle();
+    }
+
+    public List<Job> viewFavouriteJobs(Long seekerId) {
+        Seeker seeker = jobSeekerRepository.findById(seekerId).orElseThrow(() -> new RuntimeException("Seeker not found"));
+        return seeker.getFavouriteJobs();
+    }
+
+    public List<Seeker> viewJobSeekers() {
+        return jobSeekerRepository.findAll();
+    }
 }
