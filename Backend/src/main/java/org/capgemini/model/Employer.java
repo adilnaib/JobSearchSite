@@ -11,7 +11,7 @@ public class Employer {
     private Long empId;
     private String empOrg;
     private String empAddress;
-    private double empContact;
+    private String empContact;
     private String empEmail;
     private String userName;
     private String empName;
@@ -44,11 +44,11 @@ public class Employer {
         this.empAddress = empAddress;
     }
 
-    public double getEmpContact() {
+    public String getEmpContact() {
         return empContact;
     }
 
-    public void setEmpContact(double empContact) {
+    public void setEmpContact(String empContact) {
         this.empContact = empContact;
     }
 

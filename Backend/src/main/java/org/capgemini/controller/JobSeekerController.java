@@ -2,7 +2,6 @@ package org.capgemini.controller;
 
 import org.capgemini.model.Job;
 import org.capgemini.model.Seeker;
-import org.capgemini.services.EmployerService;
 import org.capgemini.services.JobSeekerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +21,13 @@ public class JobSeekerController {
     @ResponseBody
     public Seeker registerJobSeeker(@RequestBody Seeker seeker) {
         return jobSeekerService.registerJobSeeker(seeker);
+    }
+
+    //View all jobseekers
+    @GetMapping("/viewJobSeekers")
+    @ResponseBody
+    public List<Seeker> viewJobSeekers() {
+    	return jobSeekerService.viewJobSeekers();
     }
 
     //Searching for jobs by jobseeker based on location
@@ -78,6 +84,28 @@ public class JobSeekerController {
     @ResponseBody
     public void deleteJobApplication(@PathVariable Long applicationId) {
     	jobSeekerService.deleteJobApplication(applicationId);
+    }
+
+    //Job Basket Functionalities
+    //Adding favourite jobs to job basket
+    @PostMapping("/addFavouriteJob/{jobId}/{seekerId}")
+    @ResponseBody
+    public String addFavouriteJob(@PathVariable Long jobId, @PathVariable Long seekerId) {
+        return jobSeekerService.addFavouriteJob(jobId, seekerId);
+    }
+
+    //Removing favourite jobs from job basket
+    @DeleteMapping("/removeFavouriteJob/{jobId}/{seekerId}")
+    @ResponseBody
+    public String removeFavouriteJob(@PathVariable Long jobId, @PathVariable Long seekerId) {
+        return jobSeekerService.removeFavouriteJob(jobId, seekerId);
+    }
+
+    //View all jobs in job basket
+    @GetMapping("/viewFavouriteJobs/{seekerId}")
+    @ResponseBody
+    public List<Job> viewFavouriteJobs(@PathVariable Long seekerId) {
+        return jobSeekerService.viewFavouriteJobs(seekerId);
     }
 
 }
