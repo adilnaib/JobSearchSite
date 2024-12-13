@@ -1,5 +1,6 @@
 package org.capgemini.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -16,11 +17,11 @@ public class Employer {
     private String userName;
     private String empName;
     private String password;
-
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Job> jobs;
 
- 
+
     public Long getEmpId() {
         return empId;
     }
@@ -61,6 +62,14 @@ public class Employer {
         this.empEmail = empEmail;
     }
 
+    public String getUsername() {
+        return userName;
+    }
+
+    public void setUsername(String userName) {
+        this.userName = userName;
+    }
+
     public String getEmpName() {
         return empName;
     }
@@ -77,14 +86,6 @@ public class Employer {
         this.jobs = jobs;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -92,5 +93,4 @@ public class Employer {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }

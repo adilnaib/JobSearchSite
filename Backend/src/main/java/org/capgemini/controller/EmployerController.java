@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -18,60 +19,71 @@ public class EmployerController {
     @Autowired
     private EmployerService employerService;
 
-//    @PostMapping("/register")
-//    public ResponseEntity<Employer> registerEmployer(@RequestBody Employer employer) {
-//        return ResponseEntity.ok(employerService.registerEmployer(employer));
-//    }
-    
-    @PostMapping("/jobs")
-    public Job postJob(@RequestBody Job job) {
-    	return employerService.postJob(job);
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<Employer> registerEmployer(@RequestBody Employer employer) {
+        return ResponseEntity.ok(employerService.registerEmployer(employer));
     }
 
-    @PutMapping("/jobs/{jobId}")
+    @PostMapping("/addJob/{empId}")
+    @ResponseBody
+    public Job postJob(@RequestBody Job job, @PathVariable Long empId) {
+        return employerService.postJob(job, empId);
+    }
+
+    @PatchMapping("/editJob/{jobId}")
+    @ResponseBody
     public Job editJob(@PathVariable Long jobId, @RequestBody Job job) {
         return employerService.editJob(jobId, job);
     }
-    
+
     @GetMapping("/{empId}")
+    @ResponseBody
     public Employer getEmployerById(@PathVariable Long empId) {
         return employerService.getEmployerById(empId);
     }
-    
-    @DeleteMapping("/jobs/{jobId}")
+
+    @DeleteMapping("/deleteJob/{jobId}")
+    @ResponseBody
     public void deleteJob(@PathVariable Long jobId) {
-    	employerService.deleteJob(jobId);
-    }
-    
-    @GetMapping("/jobs")
-    public List<Job> viewJobs(Long empId){
-    	return employerService.viewJobs(empId);
+        employerService.deleteJob(jobId);
     }
 
-    @GetMapping("/{empId}/applications")
+    @GetMapping("/getJob/{empId}")
+    @ResponseBody
+    public List<Job> viewJobs(@PathVariable Long empId) {
+        return employerService.viewJobs(empId);
+    }
+
+    @GetMapping("/getApplications/{empId}")
+    @ResponseBody
     public List<JobApplication> getApplicationsByEmpId(@PathVariable Long empId) {
         return employerService.getApplicationsByEmpId(empId);
     }
-    
-    @GetMapping("/jobseekers/skills")
-    public List<Seeker> searchJobSeekerBySkillSet(@RequestParam String skillset){
-    	return employerService.searchJobSeekerBySkillSet(skillset);
-    }
-    
-    @GetMapping("/jobseekers/{jobId}")
-    public List<Seeker> searchJobSeekerByJobId(@PathVariable Long jobId){
-    	return employerService.searchJobSeekerByJobId(jobId);
+
+    @GetMapping("/getJobseekers/{skillset}")
+    @ResponseBody
+    public List<Seeker> searchJobSeekerBySkillSet(@PathVariable List<String> skillset) {
+        return employerService.searchJobSeekerBySkillSet(skillset);
     }
 
-    @PutMapping("/applications/{applicationId}")
+    @GetMapping("/jobseekers/{jobId}")
+    @ResponseBody
+    public List<Seeker> searchJobSeekerByJobId(@PathVariable Long jobId) {
+        return employerService.searchJobSeekerByJobId(jobId);
+    }
+
+    @PatchMapping("/applications/{applicationId}")
     public ResponseEntity<JobApplication> updateApplicationStatus(
             @PathVariable Long applicationId,
             @RequestParam String status) {
-        return ResponseEntity.ok(employerService.updateApplicationStatus(applicationId, status));
+        JobApplication updatedApplication = employerService.updateApplicationStatus(applicationId, status);
+        return ResponseEntity.ok(updatedApplication);
     }
 
-    @GetMapping("/jobs/{jobId}")
-    public Job viewJob(@PathVariable Long jobId) {
+    @GetMapping("/getjob/{empId}/{jobId}")
+    @ResponseBody
+    public Job viewJob(@PathVariable Long empId, @PathVariable Long jobId) {
         return employerService.viewJob(jobId);
     }
 }
