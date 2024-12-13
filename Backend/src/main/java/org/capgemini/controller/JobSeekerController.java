@@ -1,7 +1,7 @@
 package org.capgemini.controller;
 
-import org.capgemini.model.Job;
 import org.capgemini.model.Seeker;
+import org.capgemini.model.Job;
 import org.capgemini.services.JobSeekerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
