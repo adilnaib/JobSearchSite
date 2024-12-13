@@ -15,6 +15,7 @@ public class Employer {
     private String empEmail;
     private String userName;
     private String empName;
+    private String password;
 
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Job> jobs;
@@ -60,14 +61,6 @@ public class Employer {
         this.empEmail = empEmail;
     }
 
-    public String getUsername() {
-        return userName;
-    }
-
-    public void setUsername(String userName) {
-        this.userName = userName;
-    }
-
     public String getEmpName() {
         return empName;
     }
@@ -83,4 +76,21 @@ public class Employer {
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
     }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }
