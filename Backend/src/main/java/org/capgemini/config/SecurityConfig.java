@@ -27,8 +27,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->authorizeRequests.requestMatchers("/register").permitAll())
-                .authorizeHttpRequests(requests ->requests.anyRequest().authenticated())
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                        // Allow access to any URLs starting with "/register"
+                        .requestMatchers("/register/**").permitAll()
+                        // Any other request needs authentication
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
