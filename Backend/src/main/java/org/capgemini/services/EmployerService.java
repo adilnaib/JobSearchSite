@@ -11,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployerService {
 
-	@Autowired
+    @Autowired
     private JobRepository jobRepository;
-	
+
     @Autowired
     private EmployerRepository employerRepository;
 
@@ -31,52 +32,70 @@ public class EmployerService {
     public Employer getEmployerById(Long empId) {
         return employerRepository.findByEmpId(empId);
     }
-    
-    public Job postJob(Job job) {
-    	return jobRepository.save(job);
+
+    public Job postJob(Job job, Long empId) {
+        Employer employer = employerRepository.findByEmpId(empId);
+        if (employer == null) {
+            throw new RuntimeException("Employer not found");
+        }
+        job.setEmployer(employer);
+        return jobRepository.save(job);
     }
-    
-    public Job editJob(Long jobId, Job updatedJob) {
-        return jobRepository.findById(jobId).map(job -> {
-            job.setJobTitle(updatedJob.getJobTitle());
-            job.setJobLocation(updatedJob.getJobLocation());
-            job.setDescription(updatedJob.getDescription());
-            job.setExperienceInYears(updatedJob.getExperienceInYears());
-            job.setJobSalary(updatedJob.getJobSalary());
-            job.setNoticePeriodInDays(updatedJob.getNoticePeriodInDays());
-            job.setJobCompanyEmail(updatedJob.getJobCompanyEmail());
-            job.setJobStatus(updatedJob.getJobStatus());
-            return jobRepository.save(job);
-        }).orElseThrow(() -> new RuntimeException("Job not found"));
+
+    public Job editJob(Long jobId, Job job) {
+        Job existingJob = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
+        if (job.getJobTitle() != null) {
+            existingJob.setJobTitle(job.getJobTitle());
+        }
+        if (job.getCompanyName() != null) {
+            existingJob.setCompanyName(job.getCompanyName());
+        }
+        if (job.getJobLocation() != null) {
+            existingJob.setJobLocation(job.getJobLocation());
+        }
+        if (job.getExperienceInYears() != 0) {
+            existingJob.setExperienceInYears(job.getExperienceInYears());
+        }
+        if (job.getJobSalary() != 0) {
+            existingJob.setJobSalary(job.getJobSalary());
+        }
+        if (job.getRequiredSkills() != null) {
+            existingJob.setRequiredSkills(job.getRequiredSkills());
+        }
+        return jobRepository.save(existingJob);
     }
-    
+
     public List<Job> viewJobs(Long empId) {
         return jobRepository.findByEmployer_EmpId(empId);
     }
-    
+
     public void deleteJob(Long jobId) {
-    	jobRepository.deleteById(jobId);
+        jobRepository.deleteById(jobId);
     }
 
     public List<JobApplication> getApplicationsByEmpId(Long empId) {
-    	return jobApplicationRepository.findByEmpId(empId);
+        return jobApplicationRepository.findByEmpId(empId);
     }
-    
-    public List<Seeker> searchJobSeekerByJobId(Long jobId){
-    	return jobApplicationRepository.findSeekerByJobId(jobId);
+
+    public List<Seeker> searchJobSeekerByJobId(Long jobId) {
+        return jobApplicationRepository.findSeekerByJobId(jobId);
     }
-    
-    public List<Seeker> searchJobSeekerBySkillSet(String skillset){
-    	return jobApplicationRepository.findSeekerBySkillset(skillset);
+
+    public List<Seeker> searchJobSeekerBySkillSet(List<String> skillset) {
+        return skillset.stream()
+                .flatMap(skill -> jobApplicationRepository.findSeekerBySkillset(skill).stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
+
     public JobApplication updateApplicationStatus(Long applicationId, String status) {
         JobApplication application = jobApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found"));
         application.setStatus(status);
         return jobApplicationRepository.save(application);
     }
+
     public Job viewJob(Long jobId) {
         return jobRepository.findByJobId(jobId);
     }
-	
 }

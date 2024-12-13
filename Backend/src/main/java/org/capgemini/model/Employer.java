@@ -1,5 +1,6 @@
 package org.capgemini.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -15,8 +16,9 @@ public class Employer {
     private String empEmail;
     private String userName;
     private String empName;
-
+    private String password;
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Job> jobs;
 
  
@@ -82,5 +84,13 @@ public class Employer {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

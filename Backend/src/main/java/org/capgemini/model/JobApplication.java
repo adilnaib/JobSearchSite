@@ -1,5 +1,6 @@
 package org.capgemini.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class JobApplication {
     private Long applicationId;
     @ManyToOne
     @JoinColumn(name = "job_id")
+    @JsonIgnore
     private Job job;
     @ManyToOne
     @JoinColumn(name = "seeker_id")

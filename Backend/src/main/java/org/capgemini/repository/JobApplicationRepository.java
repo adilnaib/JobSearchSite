@@ -12,13 +12,16 @@ import java.util.List;
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
     @Query("SELECT ja FROM JobApplication ja WHERE ja.job.employer.empId = :empId")
-	List<JobApplication> findByEmpId(Long empId);
+    List<JobApplication> findByEmpId(Long empId);
+
     @Query("SELECT ja FROM JobApplication ja WHERE ja.job.jobId = :jobId")
     List<JobApplication> findByJobId(Long jobId);
+
     @Query("SELECT s FROM Seeker s WHERE s.jsId IN (SELECT ja.seeker.jsId FROM JobApplication ja WHERE ja.job.jobId = :jobId)")
-	List<Seeker> findSeekerByJobId(@Param("jobId") Long jobId);
-//	List<JobApplication> findApplicationByEmpId(Long empId);
+    List<Seeker> findSeekerByJobId(@Param("jobId") Long jobId);
+
+    //	List<JobApplication> findApplicationByEmpId(Long empId);
 //    @Query("SELECT s FROM Seeker s WHERE :skillset MEMBER OF s.jsSkills AND s.jsId IN (SELECT ja.seeker.jsId FROM JobApplication ja WHERE ja.job.jobId = :jobId)")
-	@Query("SELECT s FROM Seeker s WHERE :skillset MEMBER OF s.jsSkills")
-	List<Seeker> findSeekerBySkillset(String skillset);
+    @Query("SELECT s FROM Seeker s WHERE :skill MEMBER OF s.jsSkills")
+    List<Seeker> findSeekerBySkillset(@Param("skill") String skill);
 }
