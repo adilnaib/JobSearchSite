@@ -24,7 +24,9 @@ public class EmployerService {
     @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
+
     public Employer registerEmployer(Employer employer) {
+
         return employerRepository.save(employer);
     }
 

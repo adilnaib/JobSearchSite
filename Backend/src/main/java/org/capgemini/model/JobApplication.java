@@ -6,8 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Data;
 
 @Entity
+@Data
 public class JobApplication {
 
     @Id
@@ -20,36 +22,4 @@ public class JobApplication {
     @JoinColumn(name = "seeker_id")
     private Seeker seeker;
     private String status;
-
-    public Long getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(Long applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public Job getJob() {
-        return job;
-    }
-
-    public void setJob(Job job) {
-        this.job = job;
-    }
-
-    public Seeker getSeeker() {
-        return seeker;
-    }
-
-    public void setSeeker(Seeker seeker) {
-        this.seeker = seeker;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
