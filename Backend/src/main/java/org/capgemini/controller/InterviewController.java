@@ -17,20 +17,22 @@ public class InterviewController {
     private InterviewService interviewService;
 
     // Create a new interview with job application
-    @PostMapping("/create/{applicationId}")
-    public ResponseEntity<Interview> createInterviewWithApplication(@PathVariable Long applicationId, @RequestBody Interview interview) {
+    @PostMapping("/create/application/{applicationId}")
+    public ResponseEntity<Interview> createInterviewWithApplication(
+        @PathVariable Long applicationId, 
+        @RequestBody Interview interview) {
         Interview createdInterview = interviewService.createInterviewWithApplication(applicationId, interview);
         return ResponseEntity.ok(createdInterview);
     }
 
     // Get pre-fill data for interview
-    @GetMapping("/pre-fill/{applicationId}")
+    @GetMapping("/pre-fill/application/{applicationId}")
     public ResponseEntity<Map<String, String>> getInterviewPreFillData(@PathVariable Long applicationId) {
         Map<String, String> preFillData = interviewService.getInterviewPreFillData(applicationId);
         return ResponseEntity.ok(preFillData);
     }
 
-    // Create a new interview
+    // Create a new standalone interview
     @PostMapping
     public ResponseEntity<Interview> createInterview(@RequestBody Interview interview) {
         Interview createdInterview = interviewService.createInterview(interview);
@@ -38,24 +40,26 @@ public class InterviewController {
     }
 
     // Get all interviews
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Interview>> getAllInterviews() {
         List<Interview> interviews = interviewService.getAllInterviews();
         return ResponseEntity.ok(interviews);
     }
 
     // Get interview by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Interview> getInterviewById(@PathVariable Long id) {
-        return interviewService.getInterviewById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/details/{interviewId}")
+    public ResponseEntity<Interview> getInterviewById(@PathVariable Long interviewId) {
+        return interviewService.getInterviewById(interviewId)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 
     // Update an interview
-    @PutMapping("/{id}")
-    public ResponseEntity<Interview> updateInterview(@PathVariable Long id, @RequestBody Interview interviewDetails) {
-        Interview updatedInterview = interviewService.updateInterview(id, interviewDetails);
+    @PutMapping("/update/{interviewId}")
+    public ResponseEntity<Interview> updateInterview(
+        @PathVariable Long interviewId, 
+        @RequestBody Interview interviewDetails) {
+        Interview updatedInterview = interviewService.updateInterview(interviewId, interviewDetails);
         if (updatedInterview != null) {
             return ResponseEntity.ok(updatedInterview);
         } else {
@@ -64,9 +68,9 @@ public class InterviewController {
     }
 
     // Delete an interview
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInterview(@PathVariable Long id) {
-        interviewService.deleteInterview(id);
+    @DeleteMapping("/delete/{interviewId}")
+    public ResponseEntity<Void> deleteInterview(@PathVariable Long interviewId) {
+        interviewService.deleteInterview(interviewId);
         return ResponseEntity.noContent().build();
     }
 }
