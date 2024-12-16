@@ -30,6 +30,13 @@ public class JobSeekerController {
     	return jobSeekerService.viewJobSeekers();
     }
 
+    //View all jobs
+    @GetMapping("/viewAllJobs")
+    @ResponseBody
+    public List<Job> viewAllJobs() {
+    	return jobSeekerService.viewAllJobs();
+    }
+
     //Searching for jobs by jobseeker based on location
     @GetMapping("/searchJobsByLocation/{jobLocation}")
     @ResponseBody

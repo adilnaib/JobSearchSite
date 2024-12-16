@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employer")
@@ -69,7 +69,7 @@ public class EmployerController {
 
     @GetMapping("/jobseekers/{jobId}")
     @ResponseBody
-    public List<Seeker> searchJobSeekerByJobId(@PathVariable Long jobId) {
+    public List<Map<String, Object>> searchJobSeekerByJobId(@PathVariable Long jobId) {
         return employerService.searchJobSeekerByJobId(jobId);
     }
 

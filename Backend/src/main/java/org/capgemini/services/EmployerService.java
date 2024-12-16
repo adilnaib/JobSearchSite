@@ -10,7 +10,9 @@ import org.capgemini.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,8 +79,17 @@ public class EmployerService {
         return jobApplicationRepository.findByEmpId(empId);
     }
 
-    public List<Seeker> searchJobSeekerByJobId(Long jobId) {
-        return jobApplicationRepository.findSeekerByJobId(jobId);
+    public List<Map<String, Object>> searchJobSeekerByJobId(Long jobId) {
+        return jobApplicationRepository.findSeekerByJobId(jobId).stream().map(seeker -> {
+            Map<String, Object> seekerInfo = new HashMap<>();
+            seekerInfo.put("jsId", seeker.getJsId());
+            seekerInfo.put("jsName", seeker.getJsName());
+            seekerInfo.put("jsAddress", seeker.getJsAddress());
+            seekerInfo.put("jsContact", seeker.getJsContact());
+            seekerInfo.put("jsEmail", seeker.getJsEmail());
+            seekerInfo.put("jsSkills", seeker.getJsSkills());
+            return seekerInfo;
+        }).collect(Collectors.toList());
     }
 
     public List<Seeker> searchJobSeekerBySkillSet(List<String> skillset) {

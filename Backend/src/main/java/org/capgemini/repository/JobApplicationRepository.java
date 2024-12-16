@@ -1,5 +1,6 @@
 package org.capgemini.repository;
 
+import org.capgemini.model.Job;
 import org.capgemini.model.JobApplication;
 import org.capgemini.model.Seeker;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,6 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
 //    @Query("SELECT s FROM Seeker s WHERE :skillset MEMBER OF s.jsSkills AND s.jsId IN (SELECT ja.seeker.jsId FROM JobApplication ja WHERE ja.job.jobId = :jobId)")
     @Query("SELECT s FROM Seeker s WHERE :skill MEMBER OF s.jsSkills")
     List<Seeker> findSeekerBySkillset(@Param("skill") String skill);
+
+    boolean existsByJobAndSeeker(Job job, Seeker seeker);
 }
