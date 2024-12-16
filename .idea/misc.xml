@@ -7,7 +7,18 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/Backend/pom.xml" />
         <option value="$PROJECT_DIR$/Server/pom.xml" />
+        <option value="$PROJECT_DIR$/AuthenticatorService/pom.xml" />
+        <option value="$PROJECT_DIR$/EmployerService/pom.xml" />
+        <option value="$PROJECT_DIR$/InterviewSchedulerService/pom.xml" />
+        <option value="$PROJECT_DIR$/JobSeekerService/pom.xml" />
+        <option value="$PROJECT_DIR$/JobService/pom.xml" />
+        <option value="$PROJECT_DIR$/JobCommon/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/JobCommon/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="openjdk-23" project-jdk-type="JavaSDK">

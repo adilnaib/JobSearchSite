@@ -7,18 +7,33 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JobSeekerService (1)" />
+        <module name="EmployerService" />
+        <module name="AuthenticatorService" />
+        <module name="JobSeekerService" />
+        <module name="InterviewSchedulerService" />
         <module name="JobSearchServer" />
+        <module name="JobService" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JobCommon" target="17" />
       <module name="JobSearchSite" target="17" />
+      <module name="JobSeekerService (1)" target="17" />
       <module name="JobSystem" target="17" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="AuthenticatorService" options="-parameters" />
+      <module name="EmployerService" options="-parameters" />
+      <module name="InterviewSchedulerService" options="-parameters" />
+      <module name="JobCommon" options="-parameters" />
       <module name="JobSearchServer" options="-parameters" />
       <module name="JobSearchSite" options="-parameters" />
+      <module name="JobSeekerService" options="-parameters" />
+      <module name="JobSeekerService (1)" options="-parameters" />
+      <module name="JobService" options="-parameters" />
       <module name="JobSystem" options="-parameters" />
     </option>
   </component>
