@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="JobSearchSite" />
         <module name="JobSearchServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="JobSearchSite" target="17" />
       <module name="JobSystem" target="17" />
     </bytecodeTargetLevel>
   </component>
