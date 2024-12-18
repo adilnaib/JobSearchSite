@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @EnableJpaRepositories(basePackages = {"com.cg.sharedmodule.repository"})
@@ -15,7 +16,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
 
     List<Job> findByEmployer_EmpId(Long empId);
 
-    Job findByJobId(Long jobId);
+    Optional<Job> findByJobId(Long jobId);
 
     List<Job> findByJobLocation(String jobLocation);
 
@@ -26,5 +27,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findByCompanyName(String companyName);
 
     @Query("SELECT j FROM Job j WHERE :skill MEMBER OF j.requiredSkills")
+
     List<Job> findByRequiredSkills(@Param("skill") String skill);
+
 }
