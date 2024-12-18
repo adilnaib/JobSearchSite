@@ -19,7 +19,7 @@ public class JobApplication {
     @JsonIgnore
     private Job job;
     @ManyToOne
-    @JoinColumn(name = "seeker_id")
+    @JoinColumn(name = "js_id")
     private Seeker seeker;
     private String status;
 

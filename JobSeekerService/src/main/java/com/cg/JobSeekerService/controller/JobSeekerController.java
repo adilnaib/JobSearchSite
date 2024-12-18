@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/jobseeker")
@@ -111,7 +112,7 @@ public class JobSeekerController {
     //View all jobs in job basket
     @GetMapping("/viewFavouriteJobs/{seekerId}")
     @ResponseBody
-    public List<Job> viewFavouriteJobs(@PathVariable Long seekerId) {
+    public List<Map<String, Object>> viewFavouriteJobs(@PathVariable Long seekerId) {
         return jobSeekerService.viewFavouriteJobs(seekerId);
     }
 
