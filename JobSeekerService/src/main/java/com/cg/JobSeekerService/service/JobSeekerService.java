@@ -11,6 +11,8 @@ import com.cg.sharedmodule.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,10 +115,24 @@ public class JobSeekerService {
         return "Removed job from favourites: " + job.getJobTitle();
     }
 
-    public List<Job> viewFavouriteJobs(Long seekerId) {
+    public List<Map<String, Object>> viewFavouriteJobs(Long seekerId) {
         Seeker seeker = jobSeekerRepository.findById(seekerId)
                 .orElseThrow(() -> new SeekerException("Seeker with ID " + seekerId + " not found"));
-        return seeker.getFavouriteJobs();
+        return seeker.getFavouriteJobs().stream().map(job -> {
+            Map<String, Object> jobDetails = new HashMap<>();
+            jobDetails.put("jobId", job.getJobId());
+            jobDetails.put("jobTitle", job.getJobTitle());
+            jobDetails.put("jobLocation", job.getJobLocation());
+            jobDetails.put("description", job.getDescription());
+            jobDetails.put("experienceInYears", job.getExperienceInYears());
+            jobDetails.put("jobSalary", job.getJobSalary());
+            jobDetails.put("noticePeriodInDays", job.getNoticePeriodInDays());
+            jobDetails.put("companyName", job.getCompanyName());
+            jobDetails.put("jobCompanyEmail", job.getJobCompanyEmail());
+            jobDetails.put("jobStatus", job.getJobStatus());
+            jobDetails.put("requiredSkills", job.getRequiredSkills());
+            return jobDetails;
+        }).collect(Collectors.toList());
     }
 
     public List<Seeker> viewJobSeekers() {

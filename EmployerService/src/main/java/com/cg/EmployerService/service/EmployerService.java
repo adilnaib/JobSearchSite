@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @Service
 public class EmployerService {
 
-
     @Autowired
     private JobRepository jobRepository;
 

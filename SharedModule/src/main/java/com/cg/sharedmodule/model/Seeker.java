@@ -19,7 +19,12 @@ public class Seeker {
     private String password;
     @ElementCollection
     private List<String> jsSkills;
-    @OneToMany
+    @ManyToMany
+    @JoinTable(
+            name = "seeker_favourite_jobs",
+            joinColumns = @JoinColumn(name = "seeker_js_id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id")
+    )
     private List<Job> favouriteJobs;
 
     public Long getJsId() {

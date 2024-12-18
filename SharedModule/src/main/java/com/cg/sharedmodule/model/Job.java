@@ -2,6 +2,8 @@ package com.cg.sharedmodule.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -120,5 +122,16 @@ public class Job {
 
     public void setEmployer(Employer employer) {
         this.employer = employer;
+    }
+
+    @ManyToMany(mappedBy = "favouriteJobs")
+    private Collection<Seeker> seekers;
+
+    public Collection<Seeker> getSeekers() {
+        return seekers;
+    }
+
+    public void setSeekers(Collection<Seeker> seekers) {
+        this.seekers = seekers;
     }
 }
