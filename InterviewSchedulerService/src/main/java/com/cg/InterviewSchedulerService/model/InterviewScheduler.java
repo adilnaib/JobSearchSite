@@ -1,8 +1,9 @@
 package com.cg.InterviewSchedulerService.model;
 
+import com.cg.sharedmodule.model.JobApplication;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-
 
 @Entity
 public class InterviewScheduler {
@@ -36,7 +37,12 @@ public class InterviewScheduler {
     private String instructions;
     private String status = "Scheduled";
 
-    // Getters and Setters
+    // Many-to-one relationship with JobApplication entity
+    @ManyToOne
+    @JoinColumn(name = "application_id")
+    private JobApplication jobApplication;
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -131,5 +137,35 @@ public class InterviewScheduler {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public JobApplication getJobApplication() {
+        return jobApplication;
+    }
+
+    public void setJobApplication(JobApplication jobApplication) {
+        this.jobApplication = jobApplication;
+    }
+
+    // Fetch job details from the job application
+    public String getJobTitle() {
+        return jobApplication != null ? jobApplication.getJob().getJobTitle() : null;
+    }
+
+    public String getJobLocation() {
+        return jobApplication != null ? jobApplication.getJob().getJobLocation() : null;
+    }
+
+    // Fetch seeker details from the job application
+    public String getSeekerName() {
+        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsName() : null;
+    }
+
+    public String getSeekerContact() {
+        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsContact() : null;
+    }
+
+    public String getSeekerEmail() {
+        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsEmail() : null;
     }
 }

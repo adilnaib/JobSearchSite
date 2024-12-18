@@ -53,12 +53,17 @@
     <artifactId>mysql-connector-java</artifactId>
     <version>8.0.32</version> <!-- Use the latest version available -->
 </dependency>
-
+ 
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cg</groupId>
+			<artifactId>SharedModule</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -70,6 +75,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+<groupId>com.cg</groupId>
+<artifactId>SharedModule</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+<scope>compile</scope>
+</dependency>
 			
 		</dependencies>
 	</dependencyManagement>

@@ -2,6 +2,8 @@ package com.cg.InterviewSchedulerService.service;
 
 import com.cg.InterviewSchedulerService.model.InterviewScheduler;
 import com.cg.InterviewSchedulerService.repository.InterviewSchedulerRepository;
+import com.cg.sharedmodule.model.JobApplication;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,48 +13,56 @@ import java.util.Optional;
 @Service
 public class InterviewSchedulerService {
 
+    
+    
+
+    // Create a new interview
     @Autowired
     private InterviewSchedulerRepository interviewSchedulerRepository;
 
-    public InterviewScheduler createInterview(InterviewScheduler interview) {
-        return interviewSchedulerRepository.save(interview);
+    // Create a new interview schedule
+    public InterviewScheduler createInterviewSchedule(InterviewScheduler interviewScheduler) {
+        return interviewSchedulerRepository.save(interviewScheduler);
     }
 
-    public List<InterviewScheduler> getAllInterviews() {
+    // Get all interview schedules
+    public List<InterviewScheduler> getAllInterviewSchedules() {
         return interviewSchedulerRepository.findAll();
     }
 
-    public Optional<InterviewScheduler> getInterviewById(Long id) {
-        return interviewSchedulerRepository.findById(id);
+    // Get interview schedule by ID
+    public InterviewScheduler getInterviewScheduleById(Long id) {
+        return interviewSchedulerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Interview Scheduler not found for ID: " + id));
     }
 
-    public InterviewScheduler updateInterview(Long id, InterviewScheduler details) {
-        Optional<InterviewScheduler> existing = interviewSchedulerRepository.findById(id);
-        if (existing.isPresent()) {
-            InterviewScheduler interview = existing.get();
-            interview.setCandidate(details.getCandidate());
-            interview.setPosition(details.getPosition());
-            interview.setDate(details.getDate());
-            interview.setTime(details.getTime());
-            interview.setInterviewMode(details.getInterviewMode());
-            interview.setLocation(details.getLocation());
-            interview.setInterviewType(details.getInterviewType());
-            interview.setPanelMembers(details.getPanelMembers());
-            interview.setMeetingLink(details.getMeetingLink());
-            interview.setInstructions(details.getInstructions());
-            interview.setStatus(details.getStatus());
-            return interviewSchedulerRepository.save(interview);
-        }
-        return null;
+    // Update an interview schedule
+    public InterviewScheduler updateInterviewSchedule(Long id, InterviewScheduler updatedInterviewScheduler) {
+        InterviewScheduler existingSchedule = getInterviewScheduleById(id);
+
+        existingSchedule.setCandidate(updatedInterviewScheduler.getCandidate());
+        existingSchedule.setPosition(updatedInterviewScheduler.getPosition());
+        existingSchedule.setDate(updatedInterviewScheduler.getDate());
+        existingSchedule.setTime(updatedInterviewScheduler.getTime());
+        existingSchedule.setInterviewMode(updatedInterviewScheduler.getInterviewMode());
+        existingSchedule.setLocation(updatedInterviewScheduler.getLocation());
+        existingSchedule.setInterviewType(updatedInterviewScheduler.getInterviewType());
+        existingSchedule.setPanelMembers(updatedInterviewScheduler.getPanelMembers());
+        existingSchedule.setMeetingLink(updatedInterviewScheduler.getMeetingLink());
+        existingSchedule.setInstructions(updatedInterviewScheduler.getInstructions());
+        existingSchedule.setStatus(updatedInterviewScheduler.getStatus());
+        existingSchedule.setJobApplication(updatedInterviewScheduler.getJobApplication());
+
+        return interviewSchedulerRepository.save(existingSchedule);
     }
 
-    public InterviewScheduler cancelInterview(Long id) {
-        Optional<InterviewScheduler> interview = interviewSchedulerRepository.findById(id);
-        if (interview.isPresent()) {
-            InterviewScheduler toCancel = interview.get();
-            toCancel.setStatus("Cancelled");
-            return interviewSchedulerRepository.save(toCancel);
-        }
-        return null;
+    // Cancel an interview schedule (Set status to "Cancelled")
+    public InterviewScheduler cancelInterviewSchedule(Long id) {
+        InterviewScheduler existingSchedule = getInterviewScheduleById(id);
+
+        // Update the status to "Cancelled"
+        existingSchedule.setStatus("Cancelled");
+
+        return interviewSchedulerRepository.save(existingSchedule);
     }
 }
