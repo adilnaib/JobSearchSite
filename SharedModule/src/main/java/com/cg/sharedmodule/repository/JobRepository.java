@@ -7,13 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
 
     List<Job> findByEmployer_EmpId(Long empId);
 
-    Job findByJobId(Long jobId);
+    Optional<Job> findByJobId(Long jobId);
 
     List<Job> findByJobLocation(String jobLocation);
 

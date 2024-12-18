@@ -1,6 +1,8 @@
 package com.cg.EmployerService.controller;
 
-
+import com.cg.EmployerService.exception.EmployerNotFoundException;
+import com.cg.EmployerService.exception.JobNotFoundException;
+import com.cg.EmployerService.exception.JobApplicationNotFoundException;
 import com.cg.sharedmodule.model.Employer;
 import com.cg.sharedmodule.model.Seeker;
 import com.cg.sharedmodule.model.JobApplication;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employer")
@@ -41,7 +44,8 @@ public class EmployerController {
     @GetMapping("/{empId}")
     @ResponseBody
     public Employer getEmployerById(@PathVariable Long empId) {
-        return employerService.getEmployerById(empId);
+        return employerService.getEmployerById(empId)
+                .orElseThrow(() -> new EmployerNotFoundException("Employer not found with id: " + empId));
     }
 
     @DeleteMapping("/deleteJob/{jobId}")
@@ -85,6 +89,7 @@ public class EmployerController {
     @GetMapping("/getjob/{empId}/{jobId}")
     @ResponseBody
     public Job viewJob(@PathVariable Long empId, @PathVariable Long jobId) {
-        return employerService.viewJob(jobId);
+        return employerService.viewJob(jobId)
+                .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + jobId));
     }
 }

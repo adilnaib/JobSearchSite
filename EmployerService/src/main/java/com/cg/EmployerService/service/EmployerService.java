@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,8 +35,8 @@ public class EmployerService {
         return employerRepository.save(employer);
     }
 
-    public Employer getEmployerById(Long empId) {
-        return employerRepository.findByEmpId(empId);
+    public Optional<Employer> getEmployerById(Long empId) {
+        return Optional.ofNullable(employerRepository.findByEmpId(empId));
     }
 
     public Job postJob(Job job, Long empId) {
@@ -109,7 +110,7 @@ public class EmployerService {
         return jobApplicationRepository.save(application);
     }
 
-    public Job viewJob(Long jobId) {
+    public Optional<Job> viewJob(Long jobId) {
         return jobRepository.findByJobId(jobId);
     }
 }
