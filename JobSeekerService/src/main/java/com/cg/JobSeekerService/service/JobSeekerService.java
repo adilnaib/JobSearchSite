@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
 @Service
 public class JobSeekerService {
 
+    @Autowired
     private JobRepository jobRepository;
 
     @Autowired
     private JobSeekerRepository jobSeekerRepository;
 
+    @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
     public List<Job> searchJobsByLocation(String location) {

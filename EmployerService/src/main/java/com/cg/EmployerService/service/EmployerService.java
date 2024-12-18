@@ -21,10 +21,13 @@ import java.util.stream.Collectors;
 public class EmployerService {
 
 
+    @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
     private EmployerRepository employerRepository;
 
+    @Autowired
     private JobApplicationRepository jobApplicationRepository;
 
     public Employer registerEmployer(Employer employer) {
