@@ -1,5 +1,7 @@
 package com.cg.InterviewSchedulerService.repository;
 
-public interface InterviewSchedulerRepository {
+import com.cg.InterviewSchedulerService.model.InterviewScheduler;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface InterviewSchedulerRepository extends JpaRepository<InterviewScheduler, Long> {
 }
