@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/JobSeekerService/pom.xml" />
         <option value="$PROJECT_DIR$/JobService/pom.xml" />
         <option value="$PROJECT_DIR$/EmployerService/SharedModule/pom.xml" />
+        <option value="$PROJECT_DIR$/SharedModule/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
