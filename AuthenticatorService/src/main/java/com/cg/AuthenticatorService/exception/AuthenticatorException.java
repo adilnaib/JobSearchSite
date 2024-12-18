@@ -1,5 +1,7 @@
 package com.cg.AuthenticatorService.exception;
 
-public class AuthenticatorException {
-
+public class AuthenticatorException extends Exception {
+    public AuthenticatorException(String message) {
+        super(message);
+    }
 }
