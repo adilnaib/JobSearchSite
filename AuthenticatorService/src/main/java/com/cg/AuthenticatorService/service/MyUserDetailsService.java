@@ -1,7 +1,7 @@
 package com.cg.AuthenticatorService.service;
 
 import com.cg.AuthenticatorService.model.UserPrincipal;
-import com.cg.AuthenticatorService.model.Users;
+import com.cg.sharedmodule.model.Users;
 import com.cg.AuthenticatorService.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.cg.AuthenticatorService.service;
 
 import com.cg.AuthenticatorService.exception.AuthenticatorException;
-import com.cg.AuthenticatorService.model.Users;
+import com.cg.sharedmodule.model.Users;
 import com.cg.AuthenticatorService.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +30,6 @@ public class UserService {
         if (checkUser(user.getUsername())) {
             throw new AuthenticatorException("Registration Error: Username already exists.");
         }
-        if (checkId(user.getId())) {
-            throw new AuthenticatorException("Registration Error: Id already exists.");
-        }
         user.setPassword(encoder.encode(user.getPassword()));
         repo.save(user);
     }
@@ -48,8 +45,5 @@ public class UserService {
 
     public boolean checkUser(String username) {
         return repo.findByUsername(username) != null;
-    }
-    public boolean checkId(int id) {
-        return repo.findById(id).isPresent();
     }
 }

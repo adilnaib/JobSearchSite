@@ -1,5 +1,6 @@
 package com.cg.AuthenticatorService.model;
 
+import com.cg.sharedmodule.model.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

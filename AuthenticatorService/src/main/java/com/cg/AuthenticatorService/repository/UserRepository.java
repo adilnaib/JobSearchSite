@@ -1,6 +1,6 @@
 package com.cg.AuthenticatorService.repository;
 
-import com.cg.AuthenticatorService.model.Users;
+import com.cg.sharedmodule.model.Users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

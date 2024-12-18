@@ -2,7 +2,8 @@ package com.cg.sharedmodule.model;
 
 import com.cg.sharedmodule.model.Job;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.*;;
+
 import java.util.List;
 
 @Entity
@@ -15,13 +16,12 @@ public class Employer {
     private String empAddress;
     private String empContact;
     private String empEmail;
-    private String userName;
+    @Column(nullable = false)
+    private String username;
     private String empName;
-    private String password;
     @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Job> jobs;
-
 
     public Long getEmpId() {
         return empId;
@@ -64,11 +64,11 @@ public class Employer {
     }
 
     public String getUsername() {
-        return userName;
+        return username;
     }
 
-    public void setUsername(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmpName() {
@@ -85,13 +85,5 @@ public class Employer {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

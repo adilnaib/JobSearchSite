@@ -1,7 +1,7 @@
 package com.cg.AuthenticatorService.controller;
 
 import com.cg.AuthenticatorService.exception.AuthenticatorException;
-import com.cg.AuthenticatorService.model.Users;
+import com.cg.sharedmodule.model.Users;
 import com.cg.AuthenticatorService.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
