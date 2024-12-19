@@ -1,5 +1,8 @@
 package com.cg.InterviewSchedulerService.model;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import com.cg.sharedmodule.model.JobApplication;
 
 import jakarta.persistence.*;
@@ -10,133 +13,34 @@ public class InterviewScheduler {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long interviewId;
 
-    @NotBlank(message = "Candidate name is required")
-    private String candidate;
-
-    @NotBlank(message = "Position is required")
-    private String position;
-
-    @NotBlank(message = "Date is required")
-    private String date;
-
-    @NotBlank(message = "Time is required")
-    private String time;
-
-    @NotBlank(message = "Interview mode is required")
-    private String interviewMode;
-
-    private String location;
-
-    @NotBlank(message = "Interview type is required")
-    private String interviewType;
-
-    private String panelMembers;
-    private String meetingLink;
-    private String instructions;
-    private String status = "Scheduled";
-
-    // Many-to-one relationship with JobApplication entity
     @ManyToOne
     @JoinColumn(name = "application_id")
     private JobApplication jobApplication;
 
-    // Getters and setters
-    public Long getId() {
-        return id;
+    private LocalDate interviewDate;
+    private String interviewTime;
+    private String interviewLocation;
+    private String interviewStatus;  // e.g., "Scheduled", "Completed", "Cancelled"
+    
+    // Interview Type (Online or Offline)
+    private String interviewType;  // "Online" or "Offline"
+    
+    // List of panel members (can be just names or full details)
+    @ElementCollection
+    private List<String> panelMembers;  // Names or details of the panel members
+    
+    // Instructions for the interview
+    private String instructions;  // Instructions or guidelines for the interview
+
+    // Getters and Setters
+    public Long getInterviewId() {
+        return interviewId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCandidate() {
-        return candidate;
-    }
-
-    public void setCandidate(String candidate) {
-        this.candidate = candidate;
-    }
-
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getInterviewMode() {
-        return interviewMode;
-    }
-
-    public void setInterviewMode(String interviewMode) {
-        this.interviewMode = interviewMode;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getInterviewType() {
-        return interviewType;
-    }
-
-    public void setInterviewType(String interviewType) {
-        this.interviewType = interviewType;
-    }
-
-    public String getPanelMembers() {
-        return panelMembers;
-    }
-
-    public void setPanelMembers(String panelMembers) {
-        this.panelMembers = panelMembers;
-    }
-
-    public String getMeetingLink() {
-        return meetingLink;
-    }
-
-    public void setMeetingLink(String meetingLink) {
-        this.meetingLink = meetingLink;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setInterviewId(Long interviewId) {
+        this.interviewId = interviewId;
     }
 
     public JobApplication getJobApplication() {
@@ -147,25 +51,59 @@ public class InterviewScheduler {
         this.jobApplication = jobApplication;
     }
 
-    // Fetch job details from the job application
-    public String getJobTitle() {
-        return jobApplication != null ? jobApplication.getJob().getJobTitle() : null;
+    public LocalDate getInterviewDate() {
+        return interviewDate;
     }
 
-    public String getJobLocation() {
-        return jobApplication != null ? jobApplication.getJob().getJobLocation() : null;
+    public void setInterviewDate(LocalDate interviewDate) {
+        this.interviewDate = interviewDate;
     }
 
-    // Fetch seeker details from the job application
-    public String getSeekerName() {
-        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsName() : null;
+    public String getInterviewTime() {
+        return interviewTime;
     }
 
-    public String getSeekerContact() {
-        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsContact() : null;
+    public void setInterviewTime(String interviewTime) {
+        this.interviewTime = interviewTime;
     }
 
-    public String getSeekerEmail() {
-        return jobApplication != null && jobApplication.getSeeker() != null ? jobApplication.getSeeker().getJsEmail() : null;
+    public String getInterviewLocation() {
+        return interviewLocation;
+    }
+
+    public void setInterviewLocation(String interviewLocation) {
+        this.interviewLocation = interviewLocation;
+    }
+
+    public String getInterviewStatus() {
+        return interviewStatus;
+    }
+
+    public void setInterviewStatus(String interviewStatus) {
+        this.interviewStatus = interviewStatus;
+    }
+
+    public String getInterviewType() {
+        return interviewType;
+    }
+
+    public void setInterviewType(String interviewType) {
+        this.interviewType = interviewType;
+    }
+
+    public List<String> getPanelMembers() {
+        return panelMembers;
+    }
+
+    public void setPanelMembers(List<String> panelMembers) {
+        this.panelMembers = panelMembers;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 }
