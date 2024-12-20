@@ -3,6 +3,7 @@ package com.cg.sharedmodule.model;
 
 import jakarta.persistence.*;
 import com.cg.sharedmodule.model.Job;
+
 import java.util.List;
 
 @Entity
@@ -15,8 +16,8 @@ public class Seeker {
     private String jsAddress;
     private String jsContact;
     private String jsEmail;
+    @Column(nullable = false)
     private String username;
-    private String password;
     @ElementCollection
     private List<String> jsSkills;
     @ManyToMany
@@ -73,14 +74,6 @@ public class Seeker {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<String> getJsSkills() {
