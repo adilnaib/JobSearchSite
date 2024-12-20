@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/employer")
@@ -31,65 +30,88 @@ public class EmployerController {
 
     @PostMapping("/addJob/{empId}")
     @ResponseBody
-    public Job postJob(@RequestBody Job job, @PathVariable Long empId) {
-        return employerService.postJob(job, empId);
+    public ResponseEntity<Job> postJob(@RequestBody Job job, @PathVariable Long empId) {
+        try {
+            return ResponseEntity.ok(employerService.postJob(job, empId));
+        } catch (EmployerNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
     @PatchMapping("/editJob/{jobId}")
     @ResponseBody
-    public Job editJob(@PathVariable Long jobId, @RequestBody Job job) {
-        return employerService.editJob(jobId, job);
+    public ResponseEntity<Job> editJob(@PathVariable Long jobId, @RequestBody Job job) {
+        try {
+            return ResponseEntity.ok(employerService.editJob(jobId, job));
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
     @GetMapping("/{empId}")
     @ResponseBody
-    public Employer getEmployerById(@PathVariable Long empId) {
-        return employerService.getEmployerById(empId)
-                .orElseThrow(() -> new EmployerNotFoundException("Employer not found with id: " + empId));
+    public ResponseEntity<Employer> getEmployerById(@PathVariable Long empId) {
+        Employer employer = employerService.getEmployerById(empId);
+        if (employer == null) {
+            throw new EmployerNotFoundException("Employer not found with id: " + empId);
+        }
+        return ResponseEntity.ok(employer);
     }
 
     @DeleteMapping("/deleteJob/{jobId}")
     @ResponseBody
-    public void deleteJob(@PathVariable Long jobId) {
+    public ResponseEntity<Void> deleteJob(@PathVariable Long jobId) {
         employerService.deleteJob(jobId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getJob/{empId}")
     @ResponseBody
-    public List<Job> viewJobs(@PathVariable Long empId) {
-        return employerService.viewJobs(empId);
+    public ResponseEntity<List<Job>> viewJobs(@PathVariable Long empId) {
+        return ResponseEntity.ok(employerService.viewJobs(empId));
     }
 
     @GetMapping("/getApplications/{empId}")
     @ResponseBody
-    public List<JobApplication> getApplicationsByEmpId(@PathVariable Long empId) {
-        return employerService.getApplicationsByEmpId(empId);
+    public ResponseEntity<List<JobApplication>> getApplicationsByEmpId(@PathVariable Long empId) {
+        List<JobApplication> applications = employerService.getApplicationsByEmpId(empId);
+        if (applications.isEmpty()) {
+            throw new JobApplicationNotFoundException("Job applications not found for employer id: " + empId);
+        }
+        return ResponseEntity.ok(applications);
     }
 
     @GetMapping("/getJobseekers/{skillset}")
     @ResponseBody
-    public List<Seeker> searchJobSeekerBySkillSet(@PathVariable List<String> skillset) {
-        return employerService.searchJobSeekerBySkillSet(skillset);
+    public ResponseEntity<List<Seeker>> searchJobSeekerBySkillSet(@PathVariable List<String> skillset) {
+        return ResponseEntity.ok(employerService.searchJobSeekerBySkillSet(skillset));
     }
 
     @GetMapping("/jobseekers/{jobId}")
     @ResponseBody
-    public List<Map<String, Object>> searchJobSeekerByJobId(@PathVariable Long jobId) {
-        return employerService.searchJobSeekerByJobId(jobId);
+    public ResponseEntity<List<Map<String, Object>>> searchJobSeekerByJobId(@PathVariable Long jobId) {
+        return ResponseEntity.ok(employerService.searchJobSeekerByJobId(jobId));
     }
 
     @PatchMapping("/applications/{applicationId}")
     public ResponseEntity<JobApplication> updateApplicationStatus(
             @PathVariable Long applicationId,
             @RequestParam String status) {
-        JobApplication updatedApplication = employerService.updateApplicationStatus(applicationId, status);
-        return ResponseEntity.ok(updatedApplication);
+        try {
+            JobApplication updatedApplication = employerService.updateApplicationStatus(applicationId, status);
+            return ResponseEntity.ok(updatedApplication);
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 
     @GetMapping("/getjob/{empId}/{jobId}")
     @ResponseBody
-    public Job viewJob(@PathVariable Long empId, @PathVariable Long jobId) {
-        return employerService.viewJob(jobId)
-                .orElseThrow(() -> new JobNotFoundException("Job not found with id: " + jobId));
+    public ResponseEntity<Job> viewJob(@PathVariable Long empId, @PathVariable Long jobId) {
+        try {
+            return ResponseEntity.ok(employerService.viewJob(jobId));
+        } catch (JobNotFoundException e) {
+            return ResponseEntity.status(404).body(null);
+        }
     }
 }

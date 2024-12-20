@@ -1,6 +1,7 @@
 package com.cg.EmployerService.service;
 
-
+import com.cg.EmployerService.exception.EmployerNotFoundException;
+import com.cg.EmployerService.exception.JobNotFoundException;
 import com.cg.sharedmodule.model.Employer;
 import com.cg.EmployerService.repository.EmployerRepository;
 import com.cg.sharedmodule.model.Seeker;
@@ -11,11 +12,9 @@ import com.cg.sharedmodule.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,21 +33,21 @@ public class EmployerService {
         return employerRepository.save(employer);
     }
 
-    public Optional<Employer> getEmployerById(Long empId) {
-        return Optional.ofNullable(employerRepository.findByEmpId(empId));
+    public Employer getEmployerById(Long empId) {
+        return employerRepository.findByEmpId(empId);
     }
 
     public Job postJob(Job job, Long empId) {
         Employer employer = employerRepository.findByEmpId(empId);
         if (employer == null) {
-            throw new RuntimeException("Employer not found");
+            throw new EmployerNotFoundException("Employer not found");
         }
         job.setEmployer(employer);
         return jobRepository.save(job);
     }
 
     public Job editJob(Long jobId, Job job) {
-        Job existingJob = jobRepository.findById(jobId).orElseThrow(() -> new RuntimeException("Job not found"));
+        Job existingJob = jobRepository.findById(jobId).orElseThrow(() -> new JobNotFoundException("Job not found"));
         if (job.getJobTitle() != null) {
             existingJob.setJobTitle(job.getJobTitle());
         }
@@ -104,12 +103,16 @@ public class EmployerService {
 
     public JobApplication updateApplicationStatus(Long applicationId, String status) {
         JobApplication application = jobApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
+                .orElseThrow(() -> new JobNotFoundException("Application not found"));
         application.setStatus(status);
         return jobApplicationRepository.save(application);
     }
 
-    public Optional<Job> viewJob(Long jobId) {
-        return jobRepository.findByJobId(jobId);
+    public Job viewJob(Long jobId) {
+        Job job = jobRepository.findByJobId(jobId);
+        if (job == null) {
+            throw new JobNotFoundException("Job not found");
+        }
+        return job;
     }
 }
