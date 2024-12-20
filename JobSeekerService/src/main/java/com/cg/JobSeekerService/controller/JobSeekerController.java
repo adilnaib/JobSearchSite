@@ -69,7 +69,7 @@ public class JobSeekerController {
     //Searching for jobs by jobseeker based on requiredSkills (from Job)
     @GetMapping("/searchJobsBySkills/{requiredSkills}")
     @ResponseBody
-    public List<Job> searchJobsBySkills(@PathVariable List<String> requiredSkills) {
+    public List<Map<String, Object>> searchJobsBySkills(@PathVariable List<String> requiredSkills) {
         return jobSeekerService.searchJobsBySkills(requiredSkills);
     }
 

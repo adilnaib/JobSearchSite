@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Map;
-import java.util.HashMap;
 
 @Service
 public class JobSeekerService {
@@ -50,10 +48,25 @@ public class JobSeekerService {
         return jobSeekerRepository.save(seeker);
     }
 
-    public List<Job> searchJobsBySkills(List<String> requiredSkills) {
+    public List<Map<String, Object>> searchJobsBySkills(List<String> requiredSkills) {
         return requiredSkills.stream()
                 .flatMap(skill -> jobRepository.findByRequiredSkills(skill).stream())
                 .distinct()
+                .map(job -> {
+                    Map<String, Object> jobDetails = new HashMap<>();
+                    jobDetails.put("jobId", job.getJobId());
+                    jobDetails.put("jobTitle", job.getJobTitle());
+                    jobDetails.put("jobLocation", job.getJobLocation());
+                    jobDetails.put("description", job.getDescription());
+                    jobDetails.put("experienceInYears", job.getExperienceInYears());
+                    jobDetails.put("jobSalary", job.getJobSalary());
+                    jobDetails.put("noticePeriodInDays", job.getNoticePeriodInDays());
+                    jobDetails.put("companyName", job.getCompanyName());
+                    jobDetails.put("jobCompanyEmail", job.getJobCompanyEmail());
+                    jobDetails.put("jobStatus", job.getJobStatus());
+                    jobDetails.put("requiredSkills", job.getRequiredSkills());
+                    return jobDetails;
+                })
                 .collect(Collectors.toList());
     }
 

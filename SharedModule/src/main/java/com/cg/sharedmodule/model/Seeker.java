@@ -1,6 +1,7 @@
 package com.cg.sharedmodule.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import com.cg.sharedmodule.model.Job;
 
@@ -19,8 +20,10 @@ public class Seeker {
     @Column(nullable = false)
     private String username;
     @ElementCollection
+    @JsonIgnore
     private List<String> jsSkills;
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "seeker_favourite_jobs",
             joinColumns = @JoinColumn(name = "seeker_js_id"),
