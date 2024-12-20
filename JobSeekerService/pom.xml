@@ -51,6 +51,11 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.cg</groupId>
+			<artifactId>SharedModule</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<version>9.1.0</version>

@@ -2,7 +2,7 @@ package com.cg.sharedmodule.model;
 
 import com.cg.sharedmodule.model.Job;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;;
+import jakarta.persistence.*;
 
 import java.util.List;
 
