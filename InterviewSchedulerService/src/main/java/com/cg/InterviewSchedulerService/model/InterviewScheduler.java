@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Table(name = "interview_scheduler")
 public class InterviewScheduler {
 
     @Id
@@ -16,7 +17,7 @@ public class InterviewScheduler {
     private Long interviewId;
 
     @ManyToOne
-    @JoinColumn(name = "application_id")
+    @JoinColumn(name = "application_id",referencedColumnName = "application_id")
     private JobApplication jobApplication;
 
     private LocalDate interviewDate;
