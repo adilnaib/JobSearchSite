@@ -9,11 +9,14 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EntityScan(basePackages = "com.cg.sharedmodule.model")
-@ComponentScan(basePackages = {"com.cg.AuthenticatorService", "com.cg.sharedmodule"})
+@ComponentScan(basePackages = {
+    "com.cg.AuthenticatorService",
+    "com.cg.sharedmodule",
+    "com.cg.AuthenticatorService.config"
+})
 public class AuthenticatorServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AuthenticatorServiceApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(AuthenticatorServiceApplication.class, args);
+    }
 }
