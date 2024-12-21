@@ -1,0 +1,44 @@
+.welcome-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.welcome-nav {
+  padding: 1rem 2rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.nav-links a {
+  color: #007bff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-links a:hover {
+  background-color: #f0f0f0;
+}
+
+.welcome-content {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.welcome-content h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.welcome-content p {
+  font-size: 1.25rem;
+  color: #666;
+}

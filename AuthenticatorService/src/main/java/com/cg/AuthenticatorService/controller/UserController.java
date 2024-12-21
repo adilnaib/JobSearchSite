@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,15 +21,18 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody Users user) throws AuthenticatorException {
+    public ResponseEntity<Object> register(@RequestBody Users user) throws AuthenticatorException {
         service.register(user);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Users user) throws AuthenticatorException {
-        service.verify(user);
-        return ResponseEntity.ok("User logged in successfully");
+    public ResponseEntity<Object> login(@RequestBody Users user) throws AuthenticatorException {
+        String token = service.verify(user);
+        return ResponseEntity.ok(Map.of(
+            "message", "User logged in successfully",
+            "token", token
+        ));
     }
 }
