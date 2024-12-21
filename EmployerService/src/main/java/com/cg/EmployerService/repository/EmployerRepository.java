@@ -9,4 +9,6 @@ public interface EmployerRepository extends JpaRepository<Employer, Long> {
     Employer findByEmpId(Long empId);
 
     Employer findByEmpEmail(String username);
+
+    Employer findByUsername(String username);
 }

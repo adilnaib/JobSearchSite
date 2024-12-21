@@ -115,4 +115,8 @@ public class EmployerService {
         }
         return job;
     }
+
+    public Employer getEmployerByUsername(String username) {
+        return employerRepository.findByUsername(username);
+    }
 }

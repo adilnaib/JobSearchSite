@@ -1,51 +1,25 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material';
-import Navbar from './components/Layout/Navbar';
-import JobList from './components/Jobs/JobList';
-import JobForm from './components/Jobs/JobForm';
-import JobDetails from './components/Jobs/JobDetails';
-import ApplicationList from './components/Applications/ApplicationList';
-import SeekerList from './components/Seekers/SeekerList';
-import Register from './components/Auth/Register';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import HomePage from './components/HomePage/HomePage';
 import Login from './components/Auth/Login';
-import EmployerDashboard from './components/Dashboard/EmployerDashboard';
-import JobSeekerDashboard from './components/Dashboard/JobSeekerDashboard';
-import HomePage from './components/HomePage';
-import RegisterDetails from './components/Auth/RegisterDetails';
+import Register from './components/Auth/Register';
+import AddDetailsJobSeeker from './components/JobSeeker/AddDetails';
+import AddDetailsEmployer from './components/Employer/AddDetails';
+import EmployerDashboard from "./components/Employer/Dashboard";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-});
-
-function App() {
+const App = () => {
   return (
-    <ThemeProvider theme={theme}>
       <Router>
-        <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/jobs" element={<JobList />} />
-          <Route path="/jobs/new" element={<JobForm />} />
-          <Route path="/jobs/:jobId" element={<JobDetails />} />
-          <Route path="/applications" element={<ApplicationList />} />
-          <Route path="/seekers" element={<SeekerList />} />
-          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/employer-dashboard" element={<EmployerDashboard />} />
-          <Route path="/jobseeker-dashboard" element={<JobSeekerDashboard />} />
-          <Route path="/register-details" element={<RegisterDetails />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/jobseeker/add-details" element={<AddDetailsJobSeeker />} />
+            <Route path="/employer/add-details" element={<AddDetailsEmployer />} />
+            <Route path="/employer/dashboard" element={<EmployerDashboard />} />
         </Routes>
       </Router>
-    </ThemeProvider>
   );
-}
+};
 
 export default App;
