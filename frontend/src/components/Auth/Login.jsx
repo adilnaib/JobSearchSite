@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { setAuthToken, isAuthenticated } from '../../utils/auth';
+import { setAuthToken, isAuthenticated, setUserRole } from '../../utils/auth';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -30,10 +30,14 @@ const Login = () => {
 
             const { token, role } = response.data;
             
+            console.log('Login response role:', role);
+            
             // Use the auth utility to set token
             setAuthToken(token);
             // Store username in localStorage
             localStorage.setItem('username', username);
+            // Store user role
+            setUserRole(role);
             
             setMessage(`Logged in as ${role}`);
 

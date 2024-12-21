@@ -14,6 +14,18 @@ export const setAuthToken = (token) => {
     }
 };
 
+export const setUserRole = (role) => {
+    if (role) {
+        localStorage.setItem('userRole', role);
+    } else {
+        localStorage.removeItem('userRole');
+    }
+};
+
+export const getUserRole = () => {
+    return localStorage.getItem('userRole');
+};
+
 export const getAuthToken = () => {
     return localStorage.getItem('token');
 };
@@ -25,6 +37,7 @@ export const isAuthenticated = () => {
 export const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
+    localStorage.removeItem('userRole');
     // Remove axios default header if you're using axios
     delete axios.defaults.headers.common['Authorization'];
 };

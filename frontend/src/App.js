@@ -5,7 +5,10 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import AddDetailsJobSeeker from './components/JobSeeker/AddDetails';
 import AddDetailsEmployer from './components/Employer/AddDetails';
-import EmployerDashboard from "./components/Employer/Dashboard";
+import EmployerDashboard from './components/Employer/Dashboard';
+import JobSeekerDashboard from './components/JobSeeker/Dashboard';
+import EmployerProfile from './components/Employer/Profile';
+import JobSeekerProfile from './components/JobSeeker/Profile';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 const App = () => {
@@ -36,6 +39,30 @@ const App = () => {
           element={
             <ProtectedRoute>
               <EmployerDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/jobseeker/dashboard" 
+          element={
+            <ProtectedRoute>
+              <JobSeekerDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/employer/profile" 
+          element={
+            <ProtectedRoute>
+              <EmployerProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/jobseeker/profile" 
+          element={
+            <ProtectedRoute>
+              <JobSeekerProfile />
             </ProtectedRoute>
           } 
         />
