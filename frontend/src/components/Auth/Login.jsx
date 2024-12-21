@@ -1,55 +1,65 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Replace useHistory with useNavigate
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { setAuthToken, isAuthenticated } from '../../utils/auth';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // For loading spinner
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const navigate = useNavigate();  // Use useNavigate instead of useHistory
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate('/');
+        }
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError('');
+        
         try {
-            // Send the login request to the backend
             const response = await axios.post('http://localhost:9090/auth/login', {
                 username,
                 password,
             });
 
-            // If the login is successful, store token and role
             const { token, role } = response.data;
+            
+            // Use the auth utility to set token
+            setAuthToken(token);
+            // Store username in localStorage
+            localStorage.setItem('username', username);
+            
+            setMessage(`Logged in as ${role}`);
 
-            // Store token in localStorage
-            localStorage.setItem('token', token);
+            try {
+                const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`);
+                const employerDetails = employerResponse.data;
 
-            // Set a success message or handle redirection
-            setMessage(`Logged in as ${role}`); // Use role or username for display, not the whole object
-
-            // Make a call to get the employer details using username
-            const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            const employerDetails = employerResponse.data;
-
-            // Check if employer details are filled
-            if (employerDetails.empName && employerDetails.empEmail) {
-                // If details are filled, redirect to the employer dashboard
-                navigate('/employer/dashboard');
-            } else {
-                // If details are not filled, redirect to the add details page
+                if (employerDetails.empName && employerDetails.empEmail) {
+                    navigate('/employer/dashboard');
+                } else {
+                    navigate('/employer/add-details');
+                }
+            } catch (profileError) {
+                console.error('Error fetching profile:', profileError);
                 navigate('/employer/add-details');
             }
 
         } catch (error) {
+            setAuthToken(null); // Clear any existing token
             if (error.response && error.response.data) {
                 setError(error.response.data);
             } else {
                 setError('Invalid username or password');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 

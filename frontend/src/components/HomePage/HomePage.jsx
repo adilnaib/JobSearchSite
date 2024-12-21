@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
+import { isAuthenticated, logout } from '../../utils/auth';
 
 const HomePage = () => {
+    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        setIsLoggedIn(isAuthenticated());
+    }, []);
+
+    const handleLogout = () => {
+        logout();
+        setIsLoggedIn(false);
+        navigate('/');
+    };
+
     return (
         <div className="homepage">
             <header className="homepage-header">
@@ -22,8 +37,14 @@ const HomePage = () => {
                     </div>
                 </div>
                 <div className="auth-buttons">
-                    <button onClick={() => (window.location.href = '/register')}>Register</button>
-                    <button onClick={() => (window.location.href = '/login')}>Login</button>
+                    {isLoggedIn ? (
+                        <button onClick={handleLogout}>Logout</button>
+                    ) : (
+                        <>
+                            <button onClick={() => navigate('/register')}>Register</button>
+                            <button onClick={() => navigate('/login')}>Login</button>
+                        </>
+                    )}
                 </div>
             </header>
         </div>
