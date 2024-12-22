@@ -1,0 +1,139 @@
+import React, { useState, useEffect } from "react";
+import InterviewService from "../../services/interviewService";
+import CreateInterviewForm from "./CreateInterviewForm";
+import "./EmployerDashboard.css";
+
+const EmployerDashboard = () => {
+  const [interviews, setInterviews] = useState([]);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState(null);
+
+  // Fetch interviews for the employer
+  const fetchInterviews = async () => {
+    try {
+      const response = await InterviewService.getInterviewsByEmployerId(1); // Replace with the actual employer ID
+      setInterviews(response.data);
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInterviews();
+  }, []);
+
+  // Handle interview creation
+  const handleInterviewCreated = (newInterview) => {
+    setInterviews((prev) => [...prev, newInterview]);
+    setIsFormVisible(false);
+  };
+
+  // Handle interview cancellation
+  const handleCancelInterview = async (id) => {
+    try {
+      await InterviewService.cancelInterview(id);
+      alert("Interview cancelled successfully!");
+      fetchInterviews();
+    } catch (error) {
+      console.error("Error cancelling interview:", error);
+      alert("Failed to cancel the interview.");
+    }
+  };
+
+  // Handle rescheduling
+  const handleReschedule = (interview) => {
+    setSelectedInterview(interview);
+    setIsFormVisible(true);
+  };
+
+  // Handle viewing interview details
+  const handleViewDetails = (interview) => {
+    alert(JSON.stringify(interview, null, 2));
+  };
+
+  // Get CSS class for status
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "Scheduled":
+        return "status-scheduled";
+      case "Cancelled":
+        return "status-cancelled";
+      case "Done":
+        return "status-done";
+      default:
+        return "status-unknown";
+    }
+  };
+
+  return (
+    <div className="employer-dashboard">
+      <h1>Employer Dashboard</h1>
+      <button
+        className="create-btn"
+        onClick={() => {
+          setIsFormVisible(true);
+          setSelectedInterview(null);
+        }}
+      >
+        Create Interview
+      </button>
+
+      {isFormVisible && (
+        <CreateInterviewForm
+          onClose={() => setIsFormVisible(false)}
+          onInterviewCreated={handleInterviewCreated}
+          selectedInterview={selectedInterview}
+        />
+      )}
+
+      <div className="interviews-list">
+        <h2>Scheduled Interviews</h2>
+        {interviews.length > 0 ? (
+          interviews.map((interview) => (
+            <div className="interview-card" key={interview.id}>
+              <p>
+                <strong>Date:</strong> {interview.date}
+              </p>
+              <p>
+                <strong>Time:</strong> {interview.time}
+              </p>
+              <p>
+                <strong>Location:</strong> {interview.location}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className={`status ${getStatusClass(interview.status)}`}>
+                  {interview.status}
+                </span>
+              </p>
+              <div className="actions">
+                <button
+                  className="view-btn"
+                  onClick={() => handleViewDetails(interview)}
+                >
+                  View
+                </button>
+                <button
+                  className="reschedule-btn"
+                  onClick={() => handleReschedule(interview)}
+                >
+                  Reschedule
+                </button>
+                <button
+                  className="cancel-btn"
+                  onClick={() => handleCancelInterview(interview.id)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="no-interviews">No interviews scheduled.</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default EmployerDashboard;
