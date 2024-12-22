@@ -225,15 +225,45 @@ const EmployerDashboard = () => {
         <div className="dashboard-container">
             {/* Profile Section */}
             <div className="profile-section">
-                <h2>Welcome, {employer.empName}</h2>
-                <div className="profile-details">
+                {/* Logo Section */}
+                <div className="logo-container" style={{flex: "1"}}>
+                    <img
+                        src="/logo.png"
+                        alt="Logo"
+                        className="logo"
+                        onClick={() => navigate('/')}
+                        style={{
+                            cursor: 'pointer',
+                            height: '80px', // Adjust logo size
+                            width: 'auto'
+                        }}
+                    />
+                </div>
+
+                {/* Center Text Section */}
+                <h1 style={{flex: "2", textAlign: "center", margin: 0}}>Welcome, {employer.empName}</h1>
+
+                {/* Profile & Logout Section */}
+                <div className="actions-container" style={{flex: "1", display: "flex", justifyContent: "flex-end"}}>
                     <button
                         className="profile-btn"
                         onClick={() => {
                             navigate('/employer/profile');
                         }}
+                        style={{
+                            marginRight: '10px'
+                        }}
                     >
                         Profile
+                    </button>
+                    <button
+                        className="logout-btn"
+                        onClick={() => {
+                            localStorage.clear();
+                            navigate('/');
+                        }}
+                    >
+                        Logout
                     </button>
                 </div>
             </div>
