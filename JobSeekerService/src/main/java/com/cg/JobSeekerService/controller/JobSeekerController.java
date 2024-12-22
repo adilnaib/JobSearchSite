@@ -24,6 +24,12 @@ public class JobSeekerController {
         return jobSeekerService.registerJobSeeker(seeker);
     }
 
+    @GetMapping("/profile/{username}")
+    @ResponseBody
+    public Seeker getJobSeekerByUsername(@PathVariable String username) {
+        return jobSeekerService.getJobSeekerByUsername(username);
+    }
+
     //View all jobseekers
     @GetMapping("/viewJobSeekers")
     @ResponseBody

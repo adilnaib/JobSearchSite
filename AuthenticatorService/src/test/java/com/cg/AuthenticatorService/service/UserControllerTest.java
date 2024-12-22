@@ -48,7 +48,7 @@ class UserControllerTest {
 
         when(userService.verify(user)).thenReturn("token");
 
-        ResponseEntity<String> response = userController.login(user);
+        ResponseEntity<?> response = userController.login(user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());  // Assert response status
         assertEquals("User logged in successfully", response.getBody());

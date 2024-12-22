@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -188,7 +189,7 @@ class JobSeekerServiceApplicationTests {
 
 		when(jobRepository.findByRequiredSkills(any())).thenReturn(Arrays.asList(job1, job2));
 
-		List<Job> foundJobs = jobSeekerService.searchJobsBySkills(Arrays.asList("Java", "Python"));
+		List<Map<String, Object>> foundJobs = jobSeekerService.searchJobsBySkills(Arrays.asList("Java", "Python"));
 
 		assertNotNull(foundJobs);
 		assertEquals(2, foundJobs.size());

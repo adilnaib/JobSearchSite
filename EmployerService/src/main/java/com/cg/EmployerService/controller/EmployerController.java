@@ -38,6 +38,16 @@ public class EmployerController {
         }
     }
 
+    @GetMapping("/profile/{username}")
+    @ResponseBody
+    public ResponseEntity<Employer> getEmployerByUsername(@PathVariable String username) {
+        Employer employer = employerService.getEmployerByUsername(username);
+        if (employer == null) {
+            throw new EmployerNotFoundException("Employer not found with username: " + username);
+        }
+        return ResponseEntity.ok(employer);
+    }
+
     @PatchMapping("/editJob/{jobId}")
     @ResponseBody
     public ResponseEntity<Job> editJob(@PathVariable Long jobId, @RequestBody Job job) {

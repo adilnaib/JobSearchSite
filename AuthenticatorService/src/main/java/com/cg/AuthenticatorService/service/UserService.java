@@ -46,4 +46,8 @@ public class UserService {
     public boolean checkUser(String username) {
         return repo.findByUsername(username) != null;
     }
+
+    public Users findByUsername(String username) {
+        return repo.findByUsername(username);
+    }
 }
