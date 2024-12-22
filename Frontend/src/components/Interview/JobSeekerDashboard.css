@@ -1,0 +1,63 @@
+.job-seeker-dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.job-seeker-dashboard h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #0056b3;
+}
+
+.job-seeker-dashboard h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.interviews-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.interview-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 300px;
+}
+
+.interview-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.interview-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.interview-card p strong {
+  color: #000;
+}
+
+.interview-card a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.interview-card a:hover {
+  text-decoration: underline;
+}
+
+.no-interviews {
+  font-size: 16px;
+  color: #777;
+}

@@ -1,4 +1,4 @@
-package com.interview_backend.config;
+package com.cg.InterviewSchedulerService.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
+        registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000") // Your frontend URL
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Allow the methods you want
                 .allowedHeaders("*") // Allow any headers
