@@ -1,63 +1,124 @@
-.job-seeker-dashboard {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+/* General Styling */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #f3f4f6, #e3e6f0);
   color: #333;
 }
 
-.job-seeker-dashboard h1 {
-  font-size: 28px;
-  margin-bottom: 10px;
-  color: #0056b3;
-}
-
-.job-seeker-dashboard h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.interviews-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.interview-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
+/* Container Styling */
+.interview-dashboard {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  width: 300px;
+  text-align: center;
 }
 
-.interview-card h3 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: #333;
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #3b5998;
 }
 
-.interview-card p {
-  margin: 5px 0;
-  font-size: 14px;
+h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #4b6584;
+}
+
+/* Message Styling */
+p {
+  font-size: 1rem;
   color: #555;
 }
 
-.interview-card p strong {
-  color: #000;
+.error-message {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+/* Loading State */
+p.loading {
+  font-size: 1.2rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* When No Interviews are Scheduled */
+.no-interviews {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 2px dashed #d3d3d3;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: #666;
+}
+
+.no-interviews h3 {
+  font-size: 1.5rem;
+  color: #888;
+}
+
+/* Styling for Scheduled Interviews */
+.interviews-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.interview-card {
+  background: #f7f9fc;
+  border: 1px solid #dfe4ea;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.interview-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.interview-card h3 {
+  font-size: 1.4rem;
+  color: #2c3e50;
+}
+
+.interview-card p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
 }
 
 .interview-card a {
-  color: #007bff;
+  color: #3498db;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .interview-card a:hover {
   text-decoration: underline;
 }
 
-.no-interviews {
-  font-size: 16px;
-  color: #777;
+/* Buttons and Highlights */
+.interview-card strong {
+  color: #4b6584;
+}
+
+.interview-card p:nth-child(even) {
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .interviews-list {
+    grid-template-columns: 1fr;
+  }
 }
