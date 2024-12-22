@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobApplicationRepository extends JpaRepository<JobApplication, Long> {
@@ -27,4 +28,8 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
     List<Seeker> findSeekerBySkillset(@Param("skill") String skill);
 
     boolean existsByJobAndSeeker(Job job, Seeker seeker);
+    
+    @Query("SELECT ja FROM JobApplication ja JOIN FETCH ja.job JOIN FETCH ja.seeker WHERE ja.applicationId = :applicationId")
+    Optional<JobApplication> findByIdWithDetails(@Param("applicationId") Long applicationId);
+
 }

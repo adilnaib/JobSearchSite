@@ -16,7 +16,7 @@ public class JobApplication {
     private Long applicationId;
     @ManyToOne
     @JoinColumn(name = "job_id")
-    @JsonIgnore
+    
     private Job job;
     @ManyToOne
     @JoinColumn(name = "js_id")
