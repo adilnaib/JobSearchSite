@@ -96,6 +96,7 @@ const Login = () => {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        placeholder={"Enter your username"}
                     />
                 </div>
                 <div className="form-group">
@@ -105,6 +106,7 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        placeholder={"Enter your password"}
                     />
                 </div>
                 <button type="submit" className="register-button">Login</button>
