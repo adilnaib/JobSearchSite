@@ -46,34 +46,42 @@ const HomePage = () => {
     return (
         <div className="homepage">
             <header className="homepage-header">
-                <h1>Welcome to Job Portal</h1>
-                <p>Your one-stop solution for job search and recruitment.</p>
-                <div className="nav-buttons">
-                    {isLoggedIn ? (
-                        <>
-                            <button onClick={handleDashboardClick}>Dashboard</button>
-                            <button onClick={handleProfileClick}>Profile</button>
-                            <button onClick={handleLogout}>Logout</button>
-                        </>
-                    ) : (
-                        <>
-                            <button onClick={() => navigate('/login')}>Login</button>
-                            <button onClick={() => navigate('/register')}>Register</button>
-                        </>
-                    )}
+                <div className="top-bar">
+                    <img src="/logo.png" alt="Logo" className="logo"/>
+                    <div className="nav-buttons">
+                        {isLoggedIn ? (
+                            <>
+                                <button onClick={handleDashboardClick}>Dashboard</button>
+                                <button onClick={handleProfileClick}>Profile</button>
+                                <button onClick={handleLogout}>Logout</button>
+                            </>
+                        ) : (
+                            <>
+                                <button onClick={() => navigate('/login')}>Login</button>
+                                <button onClick={() => navigate('/register')}>Register</button>
+                            </>
+                        )}
+                    </div>
                 </div>
-                <div className="stats">
-                    <div className="stat-box">
-                        <h2>500+</h2>
-                        <p>Companies</p>
-                    </div>
-                    <div className="stat-box">
-                        <h2>10,000+</h2>
-                        <p>People Hired</p>
-                    </div>
-                    <div className="stat-box">
-                        <h2>15 LPA</h2>
-                        <p>Average Package</p>
+                <div className="content">
+                    <img src="/pixeltrue-web-development.png" alt="Side Image" className="side-image"/>
+                    <div className="text-content">
+                        <h1>Welcome to Job Finder</h1>
+                        <p style={{ textAlign: 'center' }}>Your one-stop solution for job search and recruitment.</p>
+                        <div className="stats">
+                            <div className="stat-box">
+                                <h2>500+</h2>
+                                <p>Companies</p>
+                            </div>
+                            <div className="stat-box">
+                                <h2>10,000+</h2>
+                                <p>People Hired</p>
+                            </div>
+                            <div className="stat-box">
+                                <h2>15 LPA</h2>
+                                <p>Average Package</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>

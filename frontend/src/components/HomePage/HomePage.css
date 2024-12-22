@@ -59,3 +59,37 @@
     margin: 0.5rem 0 0;
     color: #6c757d;
 }
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.logo {
+    height: 100px;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.side-image {
+    max-width: 400px;
+    margin-right: 2rem;
+}
+
+.text-content {
+    text-align: left;
+}
+
+
+
+.nav-buttons {
+    display: flex;
+    gap: 1rem;
+}

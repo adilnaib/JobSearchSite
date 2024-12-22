@@ -43,7 +43,7 @@ const JobSeekerProfile = () => {
 
     return (
         <div className="profile-container">
-            <h2>Job Seeker Profile</h2>
+            <h2>Your Profile</h2>
             {profile && (
                 <div className="profile-details">
                     <div className="profile-field">
