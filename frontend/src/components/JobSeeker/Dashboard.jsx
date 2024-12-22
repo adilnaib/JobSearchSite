@@ -5,8 +5,9 @@ import './JobSeeker.css';
 
 const JobSeekerDashboard = () => {
     const [seeker, setSeeker] = useState(null);
+    const [favoriteJobs, setFavoriteJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
-    const [favoriteJobs, setFavoriteJobs] = useState([]); // State to store IDs of favorite jobs
+    const [interviews, setInterviews] = useState([]); // State to store scheduled interviews
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchText, setSearchText] = useState('');
@@ -23,12 +24,14 @@ const JobSeekerDashboard = () => {
         } else {
             fetchSeekerData();
         }
+        fetchInterviews(); // Fetch interviews when the component mounts
     }, []);
 
     useEffect(() => {
         if (seeker?.jsId) {
             fetchJobs();
             fetchFavoriteJobs(); // Fetch favorite jobs only after seeker is loaded
+            fetchInterviews(); // Refetch interviews after seeker is loaded
         }
     }, [seeker]);
 
@@ -70,12 +73,24 @@ const JobSeekerDashboard = () => {
             localStorage.setItem('favoriteJobs', JSON.stringify(favoriteJobIds));
         } catch (err) {
             console.error('Error fetching favorite jobs:', err);
-
             // Fallback to localStorage if server fetching fails
             const savedFavorites = localStorage.getItem('favoriteJobs');
             if (savedFavorites) {
                 setFavoriteJobs(JSON.parse(savedFavorites));
             }
+        }
+    };
+
+    // Fetch scheduled interviews
+    const fetchInterviews = async () => {
+        try {
+            const response = await axios.get(`http://localhost:9090/interview/seeker/${seeker?.jsId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setInterviews(response.data);
+        } catch (err) {
+            console.error('Error fetching interviews:', err);
+            setError('Error fetching interviews.');
         }
     };
 
@@ -243,7 +258,6 @@ const JobSeekerDashboard = () => {
                     </button>
                 </div>
 
-
                 {jobs.length === 0 ? (
                     <div className="no-jobs"><p>No jobs available at the moment.</p></div>
                 ) : (
@@ -297,6 +311,27 @@ const JobSeekerDashboard = () => {
                             </div>
                         ))}
                     </div>
+                )}
+            </div>
+
+            {/* Interviews Section */}
+            <div className="interviews-section">
+                <h2>Scheduled Interviews</h2>
+                {interviews.length === 0 ? (
+                    <div className="no-interviews">
+                        <p>No interviews scheduled at the moment.</p>
+                    </div>
+                ) : (
+                    <ul className="interviews-list">
+                        {interviews.map((interview) => (
+                            <li key={interview.interviewId} className="interview-item">
+                                <p><strong>Job Title:</strong> {interview.jobTitle}</p>
+                                <p><strong>Company:</strong> {interview.companyName}</p>
+                                <p><strong>Schedule:</strong> {new Date(interview.scheduledTime).toLocaleString()}</p>
+                                <p><strong>Location:</strong> {interview.location || 'Online'}</p>
+                            </li>
+                        ))}
+                    </ul>
                 )}
             </div>
         </div>

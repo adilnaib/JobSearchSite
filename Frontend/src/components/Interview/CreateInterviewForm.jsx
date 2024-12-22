@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InterviewService from "../../services/interviewService";
+import InterviewService from "./interviewService";
 import "./CreateInterviewForm.css";
 
 const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {
@@ -54,7 +54,7 @@ const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {
       const response = await InterviewService.createInterview(formData);
       alert("Interview created successfully!");
       onInterviewCreated(response.data); // Notify parent of the new interview
-      onClose(); // Close the form after submission
+      window.location.reload();
     } catch (error) {
       console.error("Error creating interview:", error);
       alert("Failed to create interview.");
@@ -63,7 +63,8 @@ const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {
 
   // Handle cancel action
   const handleCancel = () => {
-    onClose(); // Call the onClose prop to hide the form
+    //refresh the current url
+    window.location.reload();
   };
 
   return (
