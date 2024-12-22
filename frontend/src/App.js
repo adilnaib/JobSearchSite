@@ -9,6 +9,7 @@ import EmployerDashboard from './components/Employer/Dashboard';
 import JobSeekerDashboard from './components/JobSeeker/Dashboard';
 import EmployerProfile from './components/Employer/Profile';
 import JobSeekerProfile from './components/JobSeeker/Profile';
+import PostJob from './components/Employer/PostJob';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 
 const App = () => {
@@ -65,6 +66,14 @@ const App = () => {
               <JobSeekerProfile />
             </ProtectedRoute>
           } 
+        />
+        <Route
+          path="/employer/post-job"
+          element={
+            <ProtectedRoute>
+              <PostJob />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </Router>
