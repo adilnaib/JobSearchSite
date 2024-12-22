@@ -29,7 +29,7 @@ const HomePage = () => {
         console.log('Dashboard clicked, role:', userRole);
         if (userRole === 'Employer') {
             navigate('/employer/dashboard');
-        } else if (userRole === 'Jobseeker') {
+        } else if (userRole === 'JobSeeker') {
             navigate('/jobseeker/dashboard');
         }
     };
@@ -38,7 +38,7 @@ const HomePage = () => {
         console.log('Profile clicked, role:', userRole);
         if (userRole === 'Employer') {
             navigate('/employer/profile');
-        } else if (userRole === 'Jobseeker') {
+        } else if (userRole === 'JobSeeker') {
             navigate('/jobseeker/profile');
         }
     };

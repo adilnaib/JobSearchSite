@@ -50,7 +50,7 @@ const AddDetails = () => {
     return (
         <div className="add-details-container">
             <h1>Hello, {username}!</h1>
-            <h2>Employer Details</h2>
+            <h2>Add Few More Details</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Full Name</label>

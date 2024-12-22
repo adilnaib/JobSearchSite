@@ -48,27 +48,20 @@ const JobSeekerProfile = () => {
                 <div className="profile-details">
                     <div className="profile-field">
                         <label>Name:</label>
-                        <p>{profile.name}</p>
+                        <p>{profile.jsName}</p>
                     </div>
                     <div className="profile-field">
                         <label>Email:</label>
-                        <p>{profile.email}</p>
+                        <p>{profile.jsEmail}</p>
                     </div>
                     <div className="profile-field">
                         <label>Contact:</label>
-                        <p>{profile.contact}</p>
+                        <p>{profile.jsContact}</p>
                     </div>
                     <div className="profile-field">
                         <label>Skills:</label>
-                        <p>{profile.skills}</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Experience:</label>
-                        <p>{profile.experience} years</p>
-                    </div>
-                    <div className="profile-field">
-                        <label>Education:</label>
-                        <p>{profile.education}</p>
+
+                        <p>{profile.jsSkills.map(skill => skill.charAt(0).toUpperCase() + skill.slice(1)).join(", ")}</p>
                     </div>
                     <button onClick={() => navigate('/jobseeker/dashboard')}>Back to Dashboard</button>
                 </div>

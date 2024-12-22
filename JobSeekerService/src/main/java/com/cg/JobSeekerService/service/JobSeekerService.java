@@ -157,4 +157,8 @@ public class JobSeekerService {
     public List<Job> viewAllJobs() {
         return jobRepository.findAll();
     }
+
+    public Seeker getJobSeekerByUsername(String username) {
+        return jobSeekerRepository.findByUsername(username);
+    }
 }

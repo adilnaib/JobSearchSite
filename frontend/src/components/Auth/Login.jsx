@@ -41,18 +41,34 @@ const Login = () => {
             
             setMessage(`Logged in as ${role}`);
 
-            try {
-                const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`);
-                const employerDetails = employerResponse.data;
+            if(role === 'Employer') {
+                try {
+                    const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`);
+                    const employerDetails = employerResponse.data;
 
-                if (employerDetails.empName && employerDetails.empEmail) {
-                    navigate('/employer/dashboard');
-                } else {
+                    if (employerDetails.empName && employerDetails.empEmail) {
+                        navigate('/employer/dashboard');
+                    } else {
+                        navigate('/employer/add-details');
+                    }
+                } catch (profileError) {
+                    console.error('Error fetching profile:', profileError);
                     navigate('/employer/add-details');
                 }
-            } catch (profileError) {
-                console.error('Error fetching profile:', profileError);
-                navigate('/employer/add-details');
+            }else {
+                try{
+                    const jobSeekerResponse = await axios.get(`http://localhost:9090/jobseeker/profile/${username}`);
+                    const jobSeekerDetails = jobSeekerResponse.data;
+
+                    if(jobSeekerDetails.jsName && jobSeekerDetails.jsEmail){
+                        navigate('/jobseeker/dashboard');
+                    }else{
+                        navigate('/jobseeker/add-details');
+                    }
+                }catch (profileError) {
+                    console.error('Error fetching profile:', profileError);
+                    navigate('/jobseeker/add-details');
+                }
             }
 
         } catch (error) {
