@@ -1,85 +1,119 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Replace useHistory with useNavigate
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './Auth.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // For loading spinner
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const navigate = useNavigate();  // Use useNavigate instead of useHistory
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError('');
+        setMessage('');
+
         try {
-            // Send the login request to the backend
             const response = await axios.post('http://localhost:9090/auth/login', {
                 username,
                 password,
             });
 
-            // If the login is successful, store token and role
             const { token, role } = response.data;
-
-            // Store token in localStorage
             localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
+            localStorage.setItem('role', role);
 
-            // Set a success message or handle redirection
-            setMessage(`Logged in as ${role}`); // Use role or username for display, not the whole object
+            setMessage(`Login successful!`);
 
-            // Make a call to get the employer details using username
-            const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            try {
+                const employerResponse = await axios.get(`http://localhost:9090/employer/profile/${username}`, {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            const employerDetails = employerResponse.data;
-
-            // Check if employer details are filled
-            if (employerDetails.empName && employerDetails.empEmail) {
-                // If details are filled, redirect to the employer dashboard
-                navigate('/employer/dashboard');
-            } else {
-                // If details are not filled, redirect to the add details page
-                navigate('/employer/add-details');
+                if (employerResponse.data && employerResponse.data.empId) {
+                    localStorage.setItem('empId', employerResponse.data.empId);
+                    navigate('/employer/dashboard');
+                } else {
+                    navigate('/employer/add-details');
+                }
+            } catch (profileError) {
+                if (profileError.response && profileError.response.status === 404) {
+                    navigate('/employer/add-details');
+                } else {
+                    throw profileError;
+                }
             }
-
         } catch (error) {
-            if (error.response && error.response.data) {
-                setError(error.response.data);
+            console.error('Login error:', error);
+            if (error.response) {
+                // Handle different error status codes
+                switch (error.response.status) {
+                    case 401:
+                        setError('Invalid username or password');
+                        break;
+                    case 404:
+                        setError('User not found');
+                        break;
+                    case 500:
+                        setError('Server error. Please try again later.');
+                        break;
+                    default:
+                        setError(error.response.data.message || 'An error occurred during login');
+                }
+            } else if (error.request) {
+                setError('Network error. Please check your connection.');
             } else {
-                setError('Invalid username or password');
+                setError('An unexpected error occurred');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="register-container">
-            <h2>Login</h2>
-            <form onSubmit={handleLogin}>
+        <div className="login-container">
+            <form onSubmit={handleLogin} className="login-form">
+                <h2>Login</h2>
+                
+                {error && <div className="error-message">{error}</div>}
+                {message && <div className="success-message">{message}</div>}
+                
                 <div className="form-group">
-                    <label>Username:</label>
-                    {message && <p className="success-message">{message}</p>} {/* Display success message */}
-                    {error && <p className="error-message">{error}</p>} {/* Display error message */}
+                    <label htmlFor="username">Username</label>
                     <input
                         type="text"
+                        id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
+                        placeholder="Enter your username"
                     />
                 </div>
+
                 <div className="form-group">
-                    <label>Password:</label>
+                    <label htmlFor="password">Password</label>
                     <input
                         type="password"
+                        id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        placeholder="Enter your password"
                     />
                 </div>
-                <button type="submit" className="register-button">Login</button>
+
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Logging in...' : 'Login'}
+                </button>
             </form>
-            {error && <p className="error-message">{error}</p>}
         </div>
     );
 };

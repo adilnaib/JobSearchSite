@@ -9,6 +9,7 @@ import com.cg.sharedmodule.model.JobApplication;
 import com.cg.EmployerService.service.EmployerService;
 import com.cg.sharedmodule.model.Job;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/employer")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class EmployerController {
 
     @Autowired
@@ -26,6 +28,15 @@ public class EmployerController {
     @ResponseBody
     public ResponseEntity<Employer> registerEmployer(@RequestBody Employer employer) {
         return ResponseEntity.ok(employerService.registerEmployer(employer));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> loginEmployer(@RequestBody Map<String, String> credentials) {
+        Map<String, Object> response = employerService.loginEmployer(
+            credentials.get("username"), 
+            credentials.get("password")
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/addJob/{empId}")
@@ -48,13 +59,21 @@ public class EmployerController {
         return ResponseEntity.ok(employer);
     }
 
-    @PatchMapping("/editJob/{jobId}")
-    @ResponseBody
-    public ResponseEntity<Job> editJob(@PathVariable Long jobId, @RequestBody Job job) {
+    @PutMapping("/editJob/{jobId}")
+    public ResponseEntity<Job> editJob(@PathVariable Long jobId, @RequestBody Job updatedJob) {
         try {
-            return ResponseEntity.ok(employerService.editJob(jobId, job));
-        } catch (JobNotFoundException e) {
-            return ResponseEntity.status(404).body(null);
+            Job job = employerService.editJob(jobId, updatedJob);
+            return ResponseEntity.ok()
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(job);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(null);
         }
     }
 
@@ -85,9 +104,6 @@ public class EmployerController {
     @ResponseBody
     public ResponseEntity<List<JobApplication>> getApplicationsByEmpId(@PathVariable Long empId) {
         List<JobApplication> applications = employerService.getApplicationsByEmpId(empId);
-        if (applications.isEmpty()) {
-            throw new JobApplicationNotFoundException("Job applications not found for employer id: " + empId);
-        }
         return ResponseEntity.ok(applications);
     }
 
@@ -103,15 +119,44 @@ public class EmployerController {
         return ResponseEntity.ok(employerService.searchJobSeekerByJobId(jobId));
     }
 
-    @PatchMapping("/applications/{applicationId}")
-    public ResponseEntity<JobApplication> updateApplicationStatus(
-            @PathVariable Long applicationId,
-            @RequestParam String status) {
+    @GetMapping("/applications/{empId}")
+    public ResponseEntity<List<Map<String, Object>>> getApplicationsByEmployerId(@PathVariable Long empId) {
         try {
-            JobApplication updatedApplication = employerService.updateApplicationStatus(applicationId, status);
-            return ResponseEntity.ok(updatedApplication);
-        } catch (JobNotFoundException e) {
-            return ResponseEntity.status(404).body(null);
+            List<Map<String, Object>> applications = employerService.getApplicationsByEmployerId(empId);
+            return ResponseEntity.ok()
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(applications);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(null);
+        }
+    }
+
+    @PutMapping("/updateApplication/{applicationId}")
+    public ResponseEntity<Map<String, Object>> updateApplicationStatus(
+            @PathVariable Long applicationId,
+            @RequestBody Map<String, String> statusUpdate) {
+        try {
+            Map<String, Object> updatedApplication = employerService.updateApplicationStatus(
+                applicationId, 
+                statusUpdate.get("status")
+            );
+            return ResponseEntity.ok()
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(updatedApplication);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "http://localhost:3000")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+                .header("Access-Control-Allow-Headers", "*")
+                .body(null);
         }
     }
 
