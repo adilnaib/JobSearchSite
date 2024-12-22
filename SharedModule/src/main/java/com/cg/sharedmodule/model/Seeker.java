@@ -20,7 +20,6 @@ public class Seeker {
     @Column(nullable = false)
     private String username;
     @ElementCollection
-    @JsonIgnore
     private List<String> jsSkills;
     @ManyToMany
     @JsonIgnore
