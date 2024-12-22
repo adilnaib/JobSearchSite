@@ -6,6 +6,7 @@ import Register from './components/Auth/Register';
 import AddDetailsJobSeeker from './components/JobSeeker/AddDetails';
 import AddDetailsEmployer from './components/Employer/AddDetails';
 import EmployerDashboard from "./components/Employer/Dashboard";
+import PostJob from './components/Employer/PostJob';
 import JobSeekerDashboard from "./components/JobSeeker/Dashboard";
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/jobseeker/add-details" element={<AddDetailsJobSeeker />} />
+          <Route path="/employer/post-job" element={<PostJob />} />
             <Route path="/jobseeker/dashboard" element={<JobSeekerDashboard />} />
             <Route path="/employer/add-details" element={<AddDetailsEmployer />} />
             <Route path="/employer/dashboard" element={<EmployerDashboard />} />
