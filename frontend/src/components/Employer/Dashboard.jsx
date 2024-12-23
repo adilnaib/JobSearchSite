@@ -15,6 +15,9 @@ const EmployerDashboard = () => {
     const [selectedJob, setSelectedJob] = useState(null);
     const [selectedApplication, setSelectedApplication] = useState(null);
     const [showInterviewForm, setShowInterviewForm] = useState(false);
+    const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+    const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false);
+    const [selectedInterview, setSelectedInterview] = useState(null);
     const navigate = useNavigate();
 
     const fetchEmployerData = async () => {
@@ -236,12 +239,42 @@ const EmployerDashboard = () => {
 
     const handleScheduleInterview = (application) => {
         setSelectedApplication(application);
-        setShowInterviewForm(true);
+        setIsScheduleDialogOpen(true);
     };
 
-    const handleViewApplication = (application) => {
-        setSelectedApplication(application);
-        setShowInterviewForm(true);
+    const handleViewInterviewDetails = async (application) => {
+        try {
+            const response = await axios.get(`http://localhost:9090/interview/application/${application.applicationId}`);
+            if (response.data && response.data.length > 0) {
+                setSelectedInterview(response.data[0]); // Get the latest interview
+                setIsViewDetailsOpen(true);
+            } else {
+                alert('No interview scheduled for this application yet.');
+            }
+        } catch (err) {
+            console.error('Error fetching interview details:', err);
+            alert('Error fetching interview details.');
+        }
+    };
+
+    const handleInterviewCreated = () => {
+        setIsScheduleDialogOpen(false);
+        fetchEmployerData(); // Refresh the applications list
+    };
+
+    const getStatusColor = (status) => {
+        switch (status.toUpperCase()) {
+            case 'PENDING':
+                return 'warning';
+            case 'ACCEPTED':
+                return 'success';
+            case 'REJECTED':
+                return 'error';
+            case 'SCHEDULED':
+                return 'info';
+            default:
+                return 'default';
+        }
     };
 
     if (loading) return <div className="loading">Loading...</div>;
@@ -436,7 +469,7 @@ const EmployerDashboard = () => {
                                         Schedule Interview
                                     </button>
                                     <button
-                                        onClick={() => handleViewApplication(application)}
+                                        onClick={() => handleViewApplicationDetails(application)}
                                         className="view-btn"
                                     >
                                         View Details
@@ -505,21 +538,42 @@ const EmployerDashboard = () => {
                     </div>
                 </div>
             )}
-            {showInterviewForm && selectedApplication && (
+            {isScheduleDialogOpen && selectedApplication && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <CreateInterviewForm
                             jobApplicationId={selectedApplication.applicationId}
-                            onInterviewCreated={handleInterviewScheduled}
-                            onClose={() => {
-                                setShowInterviewForm(false);
-                                setSelectedApplication(null);
-                            }}
+                            onInterviewCreated={handleInterviewCreated}
+                            onClose={() => setIsScheduleDialogOpen(false)}
                         />
                     </div>
                 </div>
             )}
-
+            {isViewDetailsOpen && selectedInterview && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Interview Details</h2>
+                        <div className="application-details">
+                            <div className="section">
+                                <h3>Interview Details</h3>
+                                <p><strong>Date:</strong> {selectedInterview.date}</p>
+                                <p><strong>Time:</strong> {selectedInterview.time}</p>
+                                <p><strong>Mode:</strong> {selectedInterview.interviewMode}</p>
+                                <p><strong>Type:</strong> {selectedInterview.interviewType}</p>
+                                <p><strong>{selectedInterview.interviewMode === 'ONLINE' ? 'Meeting Link' : 'Location'}:</strong>{' '}
+                                    {selectedInterview.interviewMode === 'ONLINE' ? selectedInterview.meetingLink : selectedInterview.location}
+                                </p>
+                                <p><strong>Panel Members:</strong> {selectedInterview.panelMembers}</p>
+                                {selectedInterview.instructions && (
+                                    <p><strong>Instructions:</strong> {selectedInterview.instructions}</p>
+                                )}
+                                <p><strong>Status:</strong> {selectedInterview.status}</p>
+                            </div>
+                        </div>
+                        <button onClick={() => setIsViewDetailsOpen(false)} className="close-btn">Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

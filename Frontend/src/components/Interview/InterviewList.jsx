@@ -17,11 +17,11 @@ import {
   Box,
   Chip
 } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, Visibility as VisibilityIcon } from '@mui/icons-material';
 import InterviewService from './interviewService';
 import CreateInterviewForm from './CreateInterviewForm';
 
-const InterviewList = ({ employerId, seekerId, jobApplicationId }) => {
+const InterviewList = ({ employerId, seekerId, jobApplicationId, onViewDetails }) => {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -140,8 +140,16 @@ const InterviewList = ({ employerId, seekerId, jobApplicationId }) => {
                 <TableCell>
                   <IconButton 
                     size="small" 
+                    onClick={() => onViewDetails(interview)}
+                    title="View Details"
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                  <IconButton 
+                    size="small" 
                     onClick={() => handleEdit(interview)}
                     disabled={interview.status === 'CANCELLED'}
+                    title="Edit Interview"
                   >
                     <EditIcon />
                   </IconButton>
@@ -149,6 +157,7 @@ const InterviewList = ({ employerId, seekerId, jobApplicationId }) => {
                     size="small" 
                     onClick={() => handleDelete(interview)}
                     disabled={interview.status === 'CANCELLED'}
+                    title="Cancel Interview"
                   >
                     <DeleteIcon />
                   </IconButton>
