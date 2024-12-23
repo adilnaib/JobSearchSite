@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from "react";
-import InterviewService from "../../services/interviewService"; // Ensure this service exists
-import CreateInterviewForm from "./CreateInterviewForm"; // Ensure this form component exists
-import "./EmployerDashboard.css"; // Styling for the dashboard
+import { useLocation } from "react-router-dom"; // To access employer ID passed via state
+import InterviewService from "./interviewService"; // Service to handle API calls
+import CreateInterviewForm from "./CreateInterviewForm"; // Component for creating interviews
+import "./EmployerDashboard.css";
 
 const EmployerDashboard = () => {
   const [interviews, setInterviews] = useState([]); // State for interviews
   const [isFormVisible, setIsFormVisible] = useState(false); // Toggle for form visibility
   const [selectedInterview, setSelectedInterview] = useState(null); // Interview to be rescheduled
+  const location = useLocation(); // To get state passed to this route
+  const employerId = location.state?.empId || 1; // Replace with fallback ID if needed
 
-  // Fetch interviews for the employer
+  // Fetch interviews dynamically using employer ID
   const fetchInterviews = async () => {
     try {
-      const response = await InterviewService.getInterviewsByEmployerId(1); // Replace with actual employer ID
-      setInterviews(response.data);
+      const response = await InterviewService.getInterviewsByEmployerId(
+        employerId
+      );
+      setInterviews(response.data || []); // Ensure fallback to an empty array
     } catch (error) {
       console.error("Error fetching interviews:", error);
+      setInterviews([]); // Default to an empty array on error
     }
   };
 
   useEffect(() => {
-    fetchInterviews();
-  }, []);
+    if (employerId) fetchInterviews();
+  }, [employerId]);
 
   // Handle interview creation
   const handleInterviewCreated = (newInterview) => {
@@ -88,7 +94,7 @@ const EmployerDashboard = () => {
 
       <div className="interviews-list">
         <h2>Scheduled Interviews</h2>
-        {interviews.length > 0 ? (
+        {Array.isArray(interviews) && interviews.length > 0 ? (
           interviews.map((interview) => (
             <div className="interview-card" key={interview.id}>
               <p>

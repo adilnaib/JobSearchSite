@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InterviewService from "../../services/interviewService";
+import InterviewService from "./interviewService";
 import "./CreateInterviewForm.css";
 
 const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {

@@ -12,6 +12,7 @@ import JobSeekerProfile from "./components/JobSeeker/Profile";
 import PostJob from "./components/Employer/PostJob";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import InterviewDashboard from "./components/Interview/JobSeekerDashboard"; // Correct import path
+import EmployerDashboardInterview from "./components/Interview/EmployerDashboard";
 
 const App = () => {
   return (
@@ -81,6 +82,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <InterviewDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/i-dashboard"
+          element={
+            <ProtectedRoute>
+              <EmployerDashboardInterview />
             </ProtectedRoute>
           }
         />
