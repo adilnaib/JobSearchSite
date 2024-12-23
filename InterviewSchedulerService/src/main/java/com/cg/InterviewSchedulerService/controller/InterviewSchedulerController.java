@@ -9,46 +9,46 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/interviews")
+@RequestMapping("/interview")
 public class InterviewSchedulerController {
+
 
     @Autowired
     private InterviewSchedulerService interviewSchedulerService;
 
-    // Fetch interviews by employer ID
-    @GetMapping("/employer/{empId}")
-    public ResponseEntity<List<InterviewScheduler>> getInterviewsByEmployer(@PathVariable Long empId) {
-        List<InterviewScheduler> interviews = interviewSchedulerService.getInterviewsByEmployer(empId);
-        return ResponseEntity.ok(interviews);
-    }
+    // Create a new interview
+    @PostMapping("/create/{jobApplicationId}")
+    public InterviewScheduler createInterview(@RequestBody InterviewScheduler interviewScheduler, @PathVariable Long jobApplicationId) {
+        InterviewScheduler createdScheduler = interviewSchedulerService.createInterview(interviewScheduler, jobApplicationId);
 
-    // Fetch interviews by seeker ID
-    @GetMapping("/seeker/{seekerId}")
-    public ResponseEntity<List<InterviewScheduler>> getInterviewsBySeeker(@PathVariable Long seekerId) {
-        List<InterviewScheduler> interviews = interviewSchedulerService.getInterviewsBySeeker(seekerId);
-        return ResponseEntity.ok(interviews);
-    }
+        // Debug: Log the saved interview scheduler
+        System.out.println("Created InterviewScheduler: " + createdScheduler);
 
-    // Schedule a new interview
-    @PostMapping("/schedule")
-    public ResponseEntity<InterviewScheduler> scheduleInterview(@RequestBody InterviewScheduler interviewScheduler) {
-        InterviewScheduler scheduledInterview = interviewSchedulerService.scheduleInterview(interviewScheduler);
-        return ResponseEntity.ok(scheduledInterview);
+        return createdScheduler;
     }
 
     // Update an existing interview
     @PutMapping("/update/{interviewId}")
-    public ResponseEntity<InterviewScheduler> updateInterview(
-            @PathVariable Long interviewId,
-            @RequestBody InterviewScheduler interviewScheduler) {
-        InterviewScheduler updatedInterview = interviewSchedulerService.updateInterview(interviewId, interviewScheduler);
-        return ResponseEntity.ok(updatedInterview);
+    public InterviewScheduler updateInterview(@PathVariable Long interviewId, @RequestBody InterviewScheduler updatedInterview) {
+        return interviewSchedulerService.updateInterview(interviewId, updatedInterview);
     }
 
-    // Cancel an interview
+    // Cancel an interview (by employer or seeker)
     @PutMapping("/cancel/{interviewId}")
-    public ResponseEntity<String> cancelInterview(@PathVariable Long interviewId) {
+    public String cancelInterview(@PathVariable Long interviewId) {
         interviewSchedulerService.cancelInterview(interviewId);
-        return ResponseEntity.ok("Interview status updated to Cancelled");
+        return "Interview with ID " + interviewId + " has been cancelled.";
+    }
+
+    // Get all interviews scheduled by an employer
+    @GetMapping("/employer/{employerId}")
+    public List<InterviewScheduler> getInterviewsByEmployerId(@PathVariable Long employerId) {
+        return interviewSchedulerService.getInterviewsByEmployerId(employerId);
+    }
+
+    // Get all interviews scheduled for a specific seeker
+    @GetMapping("/seeker/{seekerId}")
+    public List<InterviewScheduler> getInterviewsBySeekerId(@PathVariable Long seekerId) {
+        return interviewSchedulerService.getInterviewsBySeekerId(seekerId);
     }
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Employer.css';
+import CreateInterviewForm from '../Interview/CreateInterviewForm';
 
 const EmployerDashboard = () => {
     const [employer, setEmployer] = useState(null);
@@ -13,6 +14,7 @@ const EmployerDashboard = () => {
     const [editedJob, setEditedJob] = useState({});
     const [selectedJob, setSelectedJob] = useState(null);
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const [showInterviewForm, setShowInterviewForm] = useState(false);
     const navigate = useNavigate();
 
     const fetchEmployerData = async () => {
@@ -87,6 +89,19 @@ const EmployerDashboard = () => {
 
     const handleCloseApplicationDetails = () => {
         setSelectedApplication(null);
+    };
+
+    const handleOpenInterviewForm = () => {
+        setShowInterviewForm(true);
+    };
+
+    const handleCloseInterviewForm = () => {
+        setShowInterviewForm(false);
+    };
+
+    const handleInterviewScheduled = () => {
+        // Add logic to refresh applications if needed
+        setShowInterviewForm(false);
     };
 
     const handleEditJob = (job) => {
@@ -408,6 +423,12 @@ const EmployerDashboard = () => {
                                     >
                                         View Details
                                     </button>
+                                    <button
+                                        onClick={handleOpenInterviewForm}
+                                        className="schedule-interview-btn"
+                                    >
+                                        Schedule Interview
+                                    </button>
                                 </div>
                             </div>
                         ))}
@@ -472,6 +493,18 @@ const EmployerDashboard = () => {
                     </div>
                 </div>
             )}
+            {showInterviewForm && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <CreateInterviewForm
+                            application={selectedApplication}
+                            onInterviewScheduled={handleInterviewScheduled}
+                            onCancel={handleCloseInterviewForm}
+                        />
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

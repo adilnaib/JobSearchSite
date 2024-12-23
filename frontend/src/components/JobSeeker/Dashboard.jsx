@@ -5,10 +5,13 @@ import './JobSeeker.css';
 
 const JobSeekerDashboard = () => {
     const [seeker, setSeeker] = useState(null);
+    const [favoriteJobs, setFavoriteJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
-    const [favoriteJobs, setFavoriteJobs] = useState([]); // State to store IDs of favorite jobs
+    const [appliedJobs, setAppliedJobs] = useState([]); // State to store applied jobs
+    const [interviews, setInterviews] = useState([]); // State to store scheduled interviews
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [interviewError, setInterviewError] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [searchType, setSearchType] = useState('byTitle');
     const [selectedJob, setSelectedJob] = useState(null);
@@ -23,12 +26,15 @@ const JobSeekerDashboard = () => {
         } else {
             fetchSeekerData();
         }
+        fetchInterviews(); // Fetch interviews when the component mounts
     }, []);
 
     useEffect(() => {
         if (seeker?.jsId) {
             fetchJobs();
             fetchFavoriteJobs(); // Fetch favorite jobs only after seeker is loaded
+            fetchAppliedJobs(); // Fetch applied jobs only after seeker is loaded
+            fetchInterviews(); // Refetch interviews after seeker is loaded
         }
     }, [seeker]);
 
@@ -70,11 +76,43 @@ const JobSeekerDashboard = () => {
             localStorage.setItem('favoriteJobs', JSON.stringify(favoriteJobIds));
         } catch (err) {
             console.error('Error fetching favorite jobs:', err);
-
             // Fallback to localStorage if server fetching fails
             const savedFavorites = localStorage.getItem('favoriteJobs');
             if (savedFavorites) {
                 setFavoriteJobs(JSON.parse(savedFavorites));
+            }
+        }
+    };
+
+    // Fetch applied jobs
+    const fetchAppliedJobs = async () => {
+        try {
+            const response = await axios.get(`http://localhost:9090/jobseeker/viewAppliedJobs/${seeker.jsId}`);
+            const appliedJobIds = response.data.map((job) => job.jobId); // Extract applied job IDs
+            setAppliedJobs(appliedJobIds);
+        } catch (err) {
+            console.error('Error fetching applied jobs:', err);
+        }
+    };
+
+    // Fetch scheduled interviews
+    const fetchInterviews = async () => {
+        try {
+            const response = await axios.get(`http://localhost:9090/interview/seeker/${seeker?.jsId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const interviewData = response.data ?? [];
+            setInterviews(interviewData);
+            if (interviewData.length === 0) {
+                setInterviewError('No interviews scheduled at the moment.');
+            } else {
+                setInterviewError(null); // Clear previous errors
+            }
+        } catch (err) {
+            console.error('Error fetching interviews:', err);
+            const fallbackInterviews = interviews ?? []; // Retain existing data if available
+            if (fallbackInterviews.length === 0) {
+                setInterviewError('Error fetching interviews.');
             }
         }
     };
@@ -168,6 +206,7 @@ const JobSeekerDashboard = () => {
         try {
             await axios.post(`http://localhost:9090/jobseeker/applyForJob/${jobId}/${seeker.jsId}`);
             alert('Successfully applied for the job!');
+            setAppliedJobs((prev) => [...prev, jobId]); // Update applied jobs state
         } catch (err) {
             console.error('Error applying for job:', err);
             alert('Failed to apply for the job. Please try again.');
@@ -243,7 +282,6 @@ const JobSeekerDashboard = () => {
                     </button>
                 </div>
 
-
                 {jobs.length === 0 ? (
                     <div className="no-jobs"><p>No jobs available at the moment.</p></div>
                 ) : (
@@ -283,7 +321,7 @@ const JobSeekerDashboard = () => {
                                     >
                                         View Details
                                     </button>
-                                    {job.jobStatus=="OPEN" ? (
+                                    {appliedJobs.includes(job.jobId) ? (
                                         <span className="applied-text">Applied</span>
                                     ) : (
                                         <button
@@ -294,6 +332,35 @@ const JobSeekerDashboard = () => {
                                         </button>
                                     )}
                                 </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Interviews Section */}
+            <div className="interviews-section">
+                <h2>Scheduled Interviews</h2>
+                {interviewError ? (
+                    <div className="error">{interviewError}</div>
+                ) : interviews.length === 0 ? (
+                    <div className="no-interviews">
+                        <p>No interviews scheduled at the moment.</p>
+                    </div>
+                ) : (
+                    <div className="interviews-list">
+                        {interviews.map((interview) => (
+                            <div key={interview.interviewId} className="job-card">
+                                <h3>{interview.jobTitle}</h3>
+                                <p><strong>Company:</strong> {interview.companyName}</p>
+                                <p><strong>Date:</strong> {new Date(interview.date).toLocaleString()}</p>
+
+                                <p><strong>Location:</strong> {interview.location || 'Online'}</p>
+                                <p><strong>Panel Members:</strong> {interview.panelMembers}</p>
+                                <p><strong>Interview Mode:</strong> {interview.interviewMode}</p>
+                                <p><strong>Interview Type:</strong> {interview.interviewType}</p>
+                                <p><strong>Instructions:</strong> {interview.instructions}</p>
+                                <p><strong>Status:</strong> {interview.status}</p>
                             </div>
                         ))}
                     </div>
