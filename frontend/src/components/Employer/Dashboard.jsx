@@ -102,6 +102,8 @@ const EmployerDashboard = () => {
     const handleInterviewScheduled = () => {
         // Add logic to refresh applications if needed
         setShowInterviewForm(false);
+        setSelectedApplication(null);
+        fetchEmployerData();
     };
 
     const handleEditJob = (job) => {
@@ -232,6 +234,16 @@ const EmployerDashboard = () => {
         navigate('/employer/post-job');
     };
 
+    const handleScheduleInterview = (application) => {
+        setSelectedApplication(application);
+        setShowInterviewForm(true);
+    };
+
+    const handleViewApplication = (application) => {
+        setSelectedApplication(application);
+        setShowInterviewForm(true);
+    };
+
     if (loading) return <div className="loading">Loading...</div>;
     if (error) return <div className="error">{error}</div>;
     if (!employer) return <div className="error">No employer data found</div>;
@@ -351,7 +363,7 @@ const EmployerDashboard = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <>
+                                    <div>
                                         <h3>{job.jobTitle}</h3>
                                         <p><strong>Location:</strong> {job.jobLocation}</p>
                                         <p><strong>Description:</strong> {job.description}</p>
@@ -367,7 +379,7 @@ const EmployerDashboard = () => {
                                                     className="delete-btn">Delete
                                             </button>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
                             </div>
                         ))}
@@ -418,16 +430,16 @@ const EmployerDashboard = () => {
                                 </div>
                                 <div className="application-actions">
                                     <button
-                                        onClick={() => handleViewApplicationDetails(application)}
+                                        onClick={() => handleScheduleInterview(application)}
+                                        className="schedule-btn"
+                                    >
+                                        Schedule Interview
+                                    </button>
+                                    <button
+                                        onClick={() => handleViewApplication(application)}
                                         className="view-btn"
                                     >
                                         View Details
-                                    </button>
-                                    <button
-                                        onClick={handleOpenInterviewForm}
-                                        className="schedule-interview-btn"
-                                    >
-                                        Schedule Interview
                                     </button>
                                 </div>
                             </div>
@@ -493,13 +505,16 @@ const EmployerDashboard = () => {
                     </div>
                 </div>
             )}
-            {showInterviewForm && (
+            {showInterviewForm && selectedApplication && (
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <CreateInterviewForm
-                            application={selectedApplication}
-                            onInterviewScheduled={handleInterviewScheduled}
-                            onCancel={handleCloseInterviewForm}
+                            jobApplicationId={selectedApplication.applicationId}
+                            onInterviewCreated={handleInterviewScheduled}
+                            onClose={() => {
+                                setShowInterviewForm(false);
+                                setSelectedApplication(null);
+                            }}
                         />
                     </div>
                 </div>

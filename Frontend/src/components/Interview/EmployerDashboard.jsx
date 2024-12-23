@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import InterviewService from "../../services/interviewService"; // Ensure this service exists
-import CreateInterviewForm from "./CreateInterviewForm"; // Ensure this form component exists
-import "./EmployerDashboard.css"; // Styling for the dashboard
+import InterviewService from "../../services/interviewService";
+import CreateInterviewForm from "./CreateInterviewForm";
+import axios from "axios";
+import "./EmployerDashboard.css";
 
 const EmployerDashboard = () => {
-  const [interviews, setInterviews] = useState([]); // State for interviews
-  const [isFormVisible, setIsFormVisible] = useState(false); // Toggle for form visibility
-  const [selectedInterview, setSelectedInterview] = useState(null); // Interview to be rescheduled
+  const [interviews, setInterviews] = useState([]);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState(null);
+  const [jobApplications, setJobApplications] = useState([]);
+  const [selectedJobApplicationId, setSelectedJobApplicationId] = useState(null);
+  const [showApplicationSelect, setShowApplicationSelect] = useState(false);
 
   // Fetch interviews for the employer
   const fetchInterviews = async () => {
@@ -18,17 +22,28 @@ const EmployerDashboard = () => {
     }
   };
 
+  // Fetch job applications
+  const fetchJobApplications = async () => {
+    try {
+      const response = await axios.get("http://localhost:9090/jobapplications/employer/1"); // Replace with actual employer ID
+      setJobApplications(response.data);
+    } catch (error) {
+      console.error("Error fetching job applications:", error);
+    }
+  };
+
   useEffect(() => {
     fetchInterviews();
+    fetchJobApplications();
   }, []);
 
-  // Handle interview creation
   const handleInterviewCreated = (newInterview) => {
     setInterviews((prev) => [...prev, newInterview]);
     setIsFormVisible(false);
+    setShowApplicationSelect(false);
+    setSelectedJobApplicationId(null);
   };
 
-  // Handle interview cancellation
   const handleCancelInterview = async (id) => {
     try {
       await InterviewService.cancelInterview(id);
@@ -40,18 +55,33 @@ const EmployerDashboard = () => {
     }
   };
 
-  // Handle rescheduling
+  const handleCreateInterview = () => {
+    setShowApplicationSelect(true);
+    setSelectedInterview(null);
+    setIsFormVisible(false);
+  };
+
+  const handleApplicationSelect = (applicationId) => {
+    setSelectedJobApplicationId(applicationId);
+    setShowApplicationSelect(false);
+    setIsFormVisible(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormVisible(false);
+    setSelectedJobApplicationId(null);
+    setShowApplicationSelect(false);
+  };
+
+  const handleViewDetails = (interview) => {
+    alert(JSON.stringify(interview, null, 2));
+  };
+
   const handleReschedule = (interview) => {
     setSelectedInterview(interview);
     setIsFormVisible(true);
   };
 
-  // Handle viewing interview details
-  const handleViewDetails = (interview) => {
-    alert(JSON.stringify(interview, null, 2)); // Replace with a modal or detailed component if required
-  };
-
-  // Get CSS class for status
   const getStatusClass = (status) => {
     switch (status) {
       case "Scheduled":
@@ -68,22 +98,48 @@ const EmployerDashboard = () => {
   return (
     <div className="employer-dashboard">
       <h1>Employer Dashboard</h1>
-      <button
-        className="create-btn"
-        onClick={() => {
-          setIsFormVisible(true);
-          setSelectedInterview(null);
-        }}
-      >
+      <button className="create-btn" onClick={handleCreateInterview}>
         Create Interview
       </button>
 
-      {isFormVisible && (
-        <CreateInterviewForm
-          onClose={() => setIsFormVisible(false)}
-          onInterviewCreated={handleInterviewCreated}
-          selectedInterview={selectedInterview}
-        />
+      {showApplicationSelect && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Select Job Application</h2>
+            <div className="job-applications-list">
+              {jobApplications.length > 0 ? (
+                jobApplications.map((application) => (
+                  <div
+                    key={application.applicationId}
+                    className="application-item"
+                    onClick={() => handleApplicationSelect(application.applicationId)}
+                  >
+                    <p><strong>Job Title:</strong> {application.job?.jobTitle}</p>
+                    <p><strong>Applicant:</strong> {application.seeker?.name}</p>
+                    <p><strong>Status:</strong> {application.status}</p>
+                  </div>
+                ))
+              ) : (
+                <p>No job applications available</p>
+              )}
+            </div>
+            <button className="cancel-btn" onClick={() => setShowApplicationSelect(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {isFormVisible && selectedJobApplicationId && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <CreateInterviewForm
+              onClose={handleCloseForm}
+              onInterviewCreated={handleInterviewCreated}
+              jobApplicationId={selectedJobApplicationId}
+            />
+          </div>
+        </div>
       )}
 
       <div className="interviews-list">
@@ -91,45 +147,23 @@ const EmployerDashboard = () => {
         {interviews.length > 0 ? (
           interviews.map((interview) => (
             <div className="interview-card" key={interview.id}>
-              <p>
-                <strong>Date:</strong> {interview.date}
-              </p>
-              <p>
-                <strong>Time:</strong> {interview.time}
-              </p>
-              <p>
-                <strong>Location:</strong> {interview.location}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className={`status ${getStatusClass(interview.status)}`}>
-                  {interview.status}
-                </span>
-              </p>
-              <div className="actions">
-                <button
-                  className="view-btn"
-                  onClick={() => handleViewDetails(interview)}
-                >
-                  View
-                </button>
-                <button
-                  className="reschedule-btn"
-                  onClick={() => handleReschedule(interview)}
-                >
-                  Reschedule
-                </button>
-                <button
-                  className="cancel-btn"
-                  onClick={() => handleCancelInterview(interview.id)}
-                >
-                  Cancel
-                </button>
+              <p><strong>Date:</strong> {interview.date}</p>
+              <p><strong>Time:</strong> {interview.time}</p>
+              <p><strong>Location:</strong> {interview.location}</p>
+              <p><strong>Status:</strong> <span className={`status ${getStatusClass(interview.status)}`}>{interview.status}</span></p>
+              <div className="interview-actions">
+                <button onClick={() => handleViewDetails(interview)}>View Details</button>
+                {interview.status === "Scheduled" && (
+                  <>
+                    <button onClick={() => handleReschedule(interview)}>Reschedule</button>
+                    <button onClick={() => handleCancelInterview(interview.id)}>Cancel</button>
+                  </>
+                )}
               </div>
             </div>
           ))
         ) : (
-          <p className="no-interviews">No interviews scheduled.</p>
+          <p>No interviews scheduled</p>
         )}
       </div>
     </div>
