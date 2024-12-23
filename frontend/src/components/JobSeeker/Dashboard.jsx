@@ -10,6 +10,7 @@ const JobSeekerDashboard = () => {
     const [interviews, setInterviews] = useState([]); // State to store scheduled interviews
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [interviewError, setInterviewError] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [searchType, setSearchType] = useState('byTitle');
     const [selectedJob, setSelectedJob] = useState(null);
@@ -87,10 +88,19 @@ const JobSeekerDashboard = () => {
             const response = await axios.get(`http://localhost:9090/interview/seeker/${seeker?.jsId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setInterviews(response.data);
+            const interviewData = response.data ?? [];
+            setInterviews(interviewData);
+            if (interviewData.length === 0) {
+                setInterviewError('No interviews scheduled at the moment.');
+            } else {
+                setInterviewError(null); // Clear previous errors
+            }
         } catch (err) {
             console.error('Error fetching interviews:', err);
-            setError('Error fetching interviews.');
+            const fallbackInterviews = interviews ?? []; // Retain existing data if available
+            if (fallbackInterviews.length === 0) {
+                setInterviewError('Error fetching interviews.');
+            }
         }
     };
 
@@ -317,21 +327,29 @@ const JobSeekerDashboard = () => {
             {/* Interviews Section */}
             <div className="interviews-section">
                 <h2>Scheduled Interviews</h2>
-                {interviews.length === 0 ? (
+                {interviewError ? (
+                    <div className="error">{interviewError}</div>
+                ) : interviews.length === 0 ? (
                     <div className="no-interviews">
                         <p>No interviews scheduled at the moment.</p>
                     </div>
                 ) : (
-                    <ul className="interviews-list">
+                    <div className="interviews-list">
                         {interviews.map((interview) => (
-                            <li key={interview.interviewId} className="interview-item">
-                                <p><strong>Job Title:</strong> {interview.jobTitle}</p>
+                            <div key={interview.interviewId} className="job-card">
+                                <h3>{interview.jobTitle}</h3>
                                 <p><strong>Company:</strong> {interview.companyName}</p>
-                                <p><strong>Schedule:</strong> {new Date(interview.scheduledTime).toLocaleString()}</p>
+                                <p><strong>Date:</strong> {new Date(interview.date).toLocaleString()}</p>
+
                                 <p><strong>Location:</strong> {interview.location || 'Online'}</p>
-                            </li>
+                                <p><strong>Panel Members:</strong> {interview.panelMembers}</p>
+                                <p><strong>Interview Mode:</strong> {interview.interviewMode}</p>
+                                <p><strong>Interview Type:</strong> {interview.interviewType}</p>
+                                <p><strong>Instructions:</strong> {interview.instructions}</p>
+                                <p><strong>Status:</strong> {interview.status}</p>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 )}
             </div>
         </div>
