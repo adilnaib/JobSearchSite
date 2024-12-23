@@ -1,0 +1,163 @@
+/* Interview Form Styles */
+.interview-form {
+  padding: 24px;
+}
+
+.interview-form .MuiGrid-container {
+  margin-bottom: 16px;
+}
+
+.interview-form .MuiFormControl-root {
+  width: 100%;
+}
+
+.interview-form .MuiButton-root {
+  margin: 8px;
+}
+
+/* Interview List Styles */
+.interview-list {
+  padding: 24px;
+}
+
+.interview-list .MuiPaper-root {
+  margin-bottom: 24px;
+}
+
+.interview-list .MuiTableCell-head {
+  font-weight: bold;
+  background-color: #f5f5f5;
+}
+
+.interview-list .MuiTableRow-root:hover {
+  background-color: #f8f8f8;
+}
+
+.interview-list .MuiChip-root {
+  font-weight: 500;
+}
+
+.interview-list .MuiChip-root.status-scheduled {
+  background-color: #4caf50;
+  color: white;
+}
+
+.interview-list .MuiChip-root.status-cancelled {
+  background-color: #f44336;
+  color: white;
+}
+
+.interview-list .MuiChip-root.status-completed {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* Dialog Styles */
+.interview-dialog .MuiDialogTitle-root {
+  background-color: #f5f5f5;
+  padding: 16px 24px;
+}
+
+.interview-dialog .MuiDialogContent-root {
+  padding: 24px;
+}
+
+.interview-dialog .MuiDialogActions-root {
+  padding: 16px 24px;
+  background-color: #f5f5f5;
+}
+
+/* Form Field Styles */
+.form-field {
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-field .MuiTextField-root,
+.form-field .MuiSelect-root {
+  width: 100%;
+}
+
+/* Loading and Error States */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.error-message {
+  color: #f44336;
+  padding: 8px 16px;
+  margin: 8px 0;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .interview-form,
+  .interview-list {
+    padding: 16px;
+  }
+
+  .MuiGrid-item {
+    padding: 8px !important;
+  }
+
+  .MuiTableCell-root {
+    padding: 8px;
+  }
+
+  .MuiButton-root {
+    width: 100%;
+    margin: 4px 0 !important;
+  }
+}
+
+/* Custom Theme Colors */
+:root {
+  --primary-color: #1976d2;
+  --secondary-color: #dc004e;
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+  --info-color: #2196f3;
+}
+
+/* Button Styles */
+.action-button {
+  margin: 4px;
+  text-transform: none;
+}
+
+.action-button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.action-button.secondary {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+/* Animation for Loading States */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.loading {
+  animation: pulse 1.5s infinite;
+}

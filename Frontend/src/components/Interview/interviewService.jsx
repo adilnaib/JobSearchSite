@@ -1,46 +1,81 @@
 import axios from "axios";
 
-// Create an Axios instance with base configuration
-const apiClient = axios.create({
-  baseURL: "http://localhost:9090/interview",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+const BASE_URL = "http://localhost:9090/interview";
 
 const InterviewService = {
-  // Create a new interview
   createInterview: async (interviewData, jobApplicationId) => {
+    if (!jobApplicationId) {
+      throw new Error("Job Application ID is required");
+    }
+
     try {
-      const response = await apiClient.post(
-        `/create/${jobApplicationId}`,
-        interviewData
+      // Format the date and time according to backend expectations
+      const formattedDate = new Date(interviewData.date).toISOString().split('T')[0];
+      const formattedTime = interviewData.time + ":00"; // Add seconds for LocalTime format
+
+      const formattedData = {
+        date: formattedDate,
+        time: formattedTime,
+        location: interviewData.location,
+        meetingLink: interviewData.meetingLink || "",
+        panelMembers: interviewData.panelMembers,
+        interviewMode: interviewData.interviewMode,
+        interviewType: interviewData.interviewType,
+        instructions: interviewData.instructions,
+        status: "SCHEDULED"
+      };
+
+      console.log("Sending interview data:", formattedData);
+
+      const response = await axios.post(
+        `${BASE_URL}/create/${jobApplicationId}`,
+        formattedData,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       return response.data;
     } catch (error) {
-      console.error("Error creating interview:", error);
+      console.error("Error creating interview:", error.response?.data || error);
       throw error;
     }
   },
 
-  // Update an existing interview
-  updateInterview: async (interviewId, updatedData) => {
+  getInterviewsByEmployerId: async (employerId) => {
     try {
-      const response = await apiClient.put(
-        `/update/${interviewId}`,
-        updatedData
-      );
+      const response = await axios.get(`${BASE_URL}/employer/${employerId}`);
       return response.data;
     } catch (error) {
-      console.error("Error updating interview:", error);
+      console.error("Error fetching employer interviews:", error);
       throw error;
     }
   },
 
-  // Cancel an interview
+  getInterviewsBySeekerId: async (seekerId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/seeker/${seekerId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching seeker interviews:", error);
+      throw error;
+    }
+  },
+
+  getInterviewsByJobApplicationId: async (jobApplicationId) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/application/${jobApplicationId}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching job application interviews:", error);
+      throw error;
+    }
+  },
+
   cancelInterview: async (interviewId) => {
     try {
-      const response = await apiClient.put(`/cancel/${interviewId}`);
+      const response = await axios.put(`${BASE_URL}/cancel/${interviewId}`);
       return response.data;
     } catch (error) {
       console.error("Error cancelling interview:", error);
@@ -48,38 +83,32 @@ const InterviewService = {
     }
   },
 
-  // Get all interviews scheduled by an employer
-  getInterviewsByEmployerId: async (employerId) => {
+  rescheduleInterview: async (interviewId, newData) => {
     try {
-      const response = await apiClient.get(`/employer/${employerId}`);
+      // Format the date and time for the update
+      const formattedData = {
+        ...newData,
+        date: new Date(newData.date).toISOString().split('T')[0],
+        time: newData.time + ":00"
+      };
+
+      const response = await axios.put(`${BASE_URL}/update/${interviewId}`, formattedData);
       return response.data;
     } catch (error) {
-      console.error("Error fetching interviews for employer:", error);
+      console.error("Error rescheduling interview:", error);
       throw error;
     }
   },
 
-  // Get all interviews scheduled for a specific job seeker
-  getInterviewsBySeekerId: async (seekerId) => {
-    try {
-      const response = await apiClient.get(`/seeker/${seekerId}`);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching interviews for job seeker:", error);
-      throw error;
-    }
-  },
-
-  // Get details of a specific interview
   getInterviewDetails: async (interviewId) => {
     try {
-      const response = await apiClient.get(`/${interviewId}`);
+      const response = await axios.get(`${BASE_URL}/${interviewId}`);
       return response.data;
     } catch (error) {
       console.error("Error fetching interview details:", error);
       throw error;
     }
-  },
+  }
 };
 
 export default InterviewService;

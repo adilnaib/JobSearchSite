@@ -1,150 +1,254 @@
-import React, { useState } from "react";
-import InterviewService from "./interviewService";
-import "./CreateInterviewForm.css";
+import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
+  Box,
+  CircularProgress,
+  Alert,
+  Snackbar
+} from '@mui/material';
+import InterviewService from './interviewService';
 
-const CreateInterviewForm = ({onInterviewCreated, jobApplicationId }) => {
-  const [formData, setFormData] = useState({
-    date: "",
-    time: "",
-    location: "",
-    meetingLink: "",
-    panelMembers: "",
-    interviewMode: "Online",
-    interviewType: "Technical Interview",
-    instructions: "",
-    status: "Scheduled",
+const CreateInterviewForm = ({ onInterviewCreated, jobApplicationId, onClose, initialData, isEditing }) => {
+  const [formData, setFormData] = useState(initialData || {
+    date: '',
+    time: '',
+    location: '',
+    meetingLink: '',
+    panelMembers: '',
+    interviewMode: 'ONLINE',
+    interviewType: 'TECHNICAL',
+    instructions: ''
   });
 
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Clear error on change
   };
 
-  // Validate form fields
   const validateForm = () => {
-    const newErrors = {};
+    const requiredFields = ['date', 'time', 'panelMembers', 'interviewMode', 'interviewType'];
+    
+    if (formData.interviewMode === 'OFFLINE' && !formData.location) {
+      setError('Location is required for offline interviews');
+      return false;
+    }
+    
+    if (formData.interviewMode === 'ONLINE' && !formData.meetingLink) {
+      setError('Meeting link is required for online interviews');
+      return false;
+    }
 
-    if (!formData.date) newErrors.date = "Date is required.";
-    if (!formData.time) newErrors.time = "Time is required.";
-    if (!formData.location) newErrors.location = "Location is required.";
-    if (!formData.meetingLink)
-      newErrors.meetingLink = "Meeting link is required.";
-    if (!formData.panelMembers)
-      newErrors.panelMembers = "Panel members are required.";
-    if (!formData.instructions)
-      newErrors.instructions = "Instructions are required.";
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        setError(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`);
+        return false;
+      }
+    }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return true;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    setError(null);
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
-      const response = await InterviewService.createInterview(formData, jobApplicationId);
-      alert("Interview created successfully!");
-      onInterviewCreated(response.data); // Notify parent of the new interview
-      window.location.reload();
-    } catch (error) {
-      console.error("Error creating interview:", error);
-      alert("Failed to create interview.");
+      setLoading(true);
+      console.log('Submitting interview with data:', formData);
+
+      if (isEditing) {
+        await InterviewService.rescheduleInterview(initialData.interviewId, formData);
+        setShowSuccessMessage(true);
+      } else {
+        await InterviewService.createInterview(formData, jobApplicationId);
+        setShowSuccessMessage(true);
+      }
+
+      // Wait for a short delay to show the success message before closing
+      setTimeout(() => {
+        onInterviewCreated(formData);
+        onClose();
+      }, 1500);
+    } catch (err) {
+      console.error('Error creating interview:', err);
+      setError(err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle cancel action
-  const handleCancel = () => {
-    //refresh the current url
-    window.location.reload();
+  const handleCloseSnackbar = () => {
+    setShowSuccessMessage(false);
   };
 
   return (
-    <div className="create-interview-form-container">
-      <form className="create-interview-form" onSubmit={handleSubmit}>
-        <h2>Create New Interview</h2>
-        {/* Input fields */}
-        {[
-          { label: "Date", name: "date", type: "date" },
-          { label: "Time", name: "time", type: "time" },
-          { label: "Location", name: "location", type: "text" },
-          { label: "Meeting Link", name: "meetingLink", type: "text" },
-          { label: "Panel Members", name: "panelMembers", type: "text" },
-        ].map((field) => (
-          <div className="form-group" key={field.name}>
-            <label>{field.label}:</label>
-            <input
-              type={field.type}
-              name={field.name}
-              value={formData[field.name]}
-              onChange={handleInputChange}
-              required
-            />
-            {errors[field.name] && (
-              <p className="error">{errors[field.name]}</p>
+    <Dialog open={true} onClose={onClose}>
+      <DialogTitle>Create Interview</DialogTitle>
+      <DialogContent>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            {error && (
+              <Grid item xs={12}>
+                <Alert severity="error">{error}</Alert>
+              </Grid>
             )}
-          </div>
-        ))}
 
-        {/* Interview mode */}
-        <div className="form-group">
-          <label>Interview Mode:</label>
-          <select
-            name="interviewMode"
-            value={formData.interviewMode}
-            onChange={handleInputChange}
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Date"
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Time"
+                type="time"
+                name="time"
+                value={formData.time}
+                onChange={handleInputChange}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Interview Mode</InputLabel>
+                <Select
+                  name="interviewMode"
+                  value={formData.interviewMode}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="ONLINE">Online</MenuItem>
+                  <MenuItem value="OFFLINE">Offline</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth required>
+                <InputLabel>Interview Type</InputLabel>
+                <Select
+                  name="interviewType"
+                  value={formData.interviewType}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="TECHNICAL">Technical</MenuItem>
+                  <MenuItem value="HR">HR</MenuItem>
+                  <MenuItem value="MANAGERIAL">Managerial</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {formData.interviewMode === 'OFFLINE' ? (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Meeting Link"
+                  name="meetingLink"
+                  value={formData.meetingLink}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Grid>
+            )}
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Panel Members"
+                name="panelMembers"
+                value={formData.panelMembers}
+                onChange={handleInputChange}
+                required
+                helperText="Enter panel members' names separated by commas"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Instructions"
+                name="instructions"
+                value={formData.instructions}
+                onChange={handleInputChange}
+                multiline
+                rows={3}
+              />
+            </Grid>
+          </Grid>
+
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button onClick={onClose}>Cancel</Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={loading}
+              startIcon={loading && <CircularProgress size={20} />}
+            >
+              {isEditing ? 'Update Interview' : 'Schedule Interview'}
+            </Button>
+          </Box>
+
+          <Snackbar
+            open={showSuccessMessage}
+            autoHideDuration={1500}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <option value="Online">Online</option>
-            <option value="Offline">Offline</option>
-          </select>
-        </div>
-
-        {/* Interview type */}
-        <div className="form-group">
-          <label>Interview Type:</label>
-          <select
-            name="interviewType"
-            value={formData.interviewType}
-            onChange={handleInputChange}
-          >
-            <option value="Technical Interview">Technical Interview</option>
-            <option value="HR Interview">HR Interview</option>
-            <option value="Managerial Interview">Managerial Interview</option>
-          </select>
-        </div>
-
-        {/* Instructions */}
-        <div className="form-group">
-          <label>Instructions:</label>
-          <textarea
-            name="instructions"
-            value={formData.instructions}
-            onChange={handleInputChange}
-          ></textarea>
-          {errors.instructions && (
-            <p className="error">{errors.instructions}</p>
-          )}
-        </div>
-
-        {/* Action buttons */}
-        <div className="form-actions">
-          <button type="submit" className="submit-btn">
-            Create Interview
-          </button>
-          <button type="button" className="cancel-btn" onClick={handleCancel}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+            <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+              {isEditing ? 'Interview updated successfully!' : 'Interview scheduled successfully!'}
+            </Alert>
+          </Snackbar>
+        </form>
+      </DialogContent>
+      <DialogActions>
+      </DialogActions>
+    </Dialog>
   );
 };
 
