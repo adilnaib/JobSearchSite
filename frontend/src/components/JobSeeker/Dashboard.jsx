@@ -213,7 +213,7 @@ const JobSeekerDashboard = () => {
         }
     };
 
-    if (loading) return <div className="loading">Loading...</div>;
+    if (loading) return <div className="loading"><h4>Loading...</h4></div>;
     if (error) return <div className="error">{error}</div>;
 
     return (

@@ -277,7 +277,7 @@ const EmployerDashboard = () => {
         }
     };
 
-    if (loading) return <div className="loading">Loading...</div>;
+    if (loading) return <div className="loading"><h4>Loading...</h4></div>;
     if (error) return <div className="error">{error}</div>;
     if (!employer) return <div className="error">No employer data found</div>;
 
