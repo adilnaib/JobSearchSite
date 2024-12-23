@@ -1,138 +1,122 @@
-import React, { useState, useEffect } from "react";
-import InterviewService from "../../services/interviewService"; // Ensure this service exists
-import CreateInterviewForm from "./CreateInterviewForm"; // Ensure this form component exists
-import "./EmployerDashboard.css"; // Styling for the dashboard
+import React, { useState } from 'react';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Box,
+  Paper
+} from '@mui/material';
+import CreateInterviewForm from './CreateInterviewForm';
+import InterviewList from './InterviewList';
 
-const EmployerDashboard = () => {
-  const [interviews, setInterviews] = useState([]); // State for interviews
-  const [isFormVisible, setIsFormVisible] = useState(false); // Toggle for form visibility
-  const [selectedInterview, setSelectedInterview] = useState(null); // Interview to be rescheduled
+const EmployerDashboard = ({ employerId, jobApplicationId }) => {
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [isViewDetailsOpen, setIsViewDetailsOpen] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState(null);
 
-  // Fetch interviews for the employer
-  const fetchInterviews = async () => {
-    try {
-      const response = await InterviewService.getInterviewsByEmployerId(1); // Replace with actual employer ID
-      setInterviews(response.data);
-    } catch (error) {
-      console.error("Error fetching interviews:", error);
-    }
+  const handleScheduleInterview = () => {
+    setIsScheduleDialogOpen(true);
   };
 
-  useEffect(() => {
-    fetchInterviews();
-  }, []);
-
-  // Handle interview creation
-  const handleInterviewCreated = (newInterview) => {
-    setInterviews((prev) => [...prev, newInterview]);
-    setIsFormVisible(false);
-  };
-
-  // Handle interview cancellation
-  const handleCancelInterview = async (id) => {
-    try {
-      await InterviewService.cancelInterview(id);
-      alert("Interview cancelled successfully!");
-      fetchInterviews();
-    } catch (error) {
-      console.error("Error cancelling interview:", error);
-      alert("Failed to cancel the interview.");
-    }
-  };
-
-  // Handle rescheduling
-  const handleReschedule = (interview) => {
-    setSelectedInterview(interview);
-    setIsFormVisible(true);
-  };
-
-  // Handle viewing interview details
   const handleViewDetails = (interview) => {
-    alert(JSON.stringify(interview, null, 2)); // Replace with a modal or detailed component if required
+    setSelectedInterview(interview);
+    setIsViewDetailsOpen(true);
   };
 
-  // Get CSS class for status
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "Scheduled":
-        return "status-scheduled";
-      case "Cancelled":
-        return "status-cancelled";
-      case "Done":
-        return "status-done";
-      default:
-        return "status-unknown";
-    }
+  const handleInterviewCreated = (interviewData) => {
+    setIsScheduleDialogOpen(false);
+    // You might want to refresh the interview list here
   };
 
   return (
-    <div className="employer-dashboard">
-      <h1>Employer Dashboard</h1>
-      <button
-        className="create-btn"
-        onClick={() => {
-          setIsFormVisible(true);
-          setSelectedInterview(null);
-        }}
-      >
-        Create Interview
-      </button>
+    <Box sx={{ p: 3 }}>
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6">Interview Management</Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleScheduleInterview}
+          >
+            Schedule Interview
+          </Button>
+        </Box>
 
-      {isFormVisible && (
-        <CreateInterviewForm
-          onClose={() => setIsFormVisible(false)}
-          onInterviewCreated={handleInterviewCreated}
-          selectedInterview={selectedInterview}
+        <InterviewList 
+          employerId={employerId}
+          jobApplicationId={jobApplicationId}
+          onViewDetails={handleViewDetails}
         />
-      )}
+      </Paper>
 
-      <div className="interviews-list">
-        <h2>Scheduled Interviews</h2>
-        {interviews.length > 0 ? (
-          interviews.map((interview) => (
-            <div className="interview-card" key={interview.id}>
-              <p>
-                <strong>Date:</strong> {interview.date}
-              </p>
-              <p>
-                <strong>Time:</strong> {interview.time}
-              </p>
-              <p>
-                <strong>Location:</strong> {interview.location}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span className={`status ${getStatusClass(interview.status)}`}>
-                  {interview.status}
-                </span>
-              </p>
-              <div className="actions">
-                <button
-                  className="view-btn"
-                  onClick={() => handleViewDetails(interview)}
-                >
-                  View
-                </button>
-                <button
-                  className="reschedule-btn"
-                  onClick={() => handleReschedule(interview)}
-                >
-                  Reschedule
-                </button>
-                <button
-                  className="cancel-btn"
-                  onClick={() => handleCancelInterview(interview.id)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="no-interviews">No interviews scheduled.</p>
-        )}
-      </div>
-    </div>
+      {/* Schedule Interview Dialog */}
+      <Dialog 
+        open={isScheduleDialogOpen} 
+        onClose={() => setIsScheduleDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Schedule New Interview</DialogTitle>
+        <DialogContent>
+          <CreateInterviewForm
+            jobApplicationId={jobApplicationId}
+            onInterviewCreated={handleInterviewCreated}
+            onClose={() => setIsScheduleDialogOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* View Details Dialog */}
+      <Dialog 
+        open={isViewDetailsOpen} 
+        onClose={() => setIsViewDetailsOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Interview Details</DialogTitle>
+        <DialogContent>
+          {selectedInterview && (
+            <Box sx={{ p: 2 }}>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Date:</strong> {selectedInterview.date}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Time:</strong> {selectedInterview.time}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Mode:</strong> {selectedInterview.interviewMode}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Type:</strong> {selectedInterview.interviewType}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>{selectedInterview.interviewMode === 'ONLINE' ? 'Meeting Link' : 'Location'}:</strong>{' '}
+                {selectedInterview.interviewMode === 'ONLINE' ? selectedInterview.meetingLink : selectedInterview.location}
+              </Typography>
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Panel Members:</strong> {selectedInterview.panelMembers}
+              </Typography>
+              {selectedInterview.instructions && (
+                <Typography variant="subtitle1" gutterBottom>
+                  <strong>Instructions:</strong> {selectedInterview.instructions}
+                </Typography>
+              )}
+              <Typography variant="subtitle1" gutterBottom>
+                <strong>Status:</strong> {selectedInterview.status}
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsViewDetailsOpen(false)} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 
