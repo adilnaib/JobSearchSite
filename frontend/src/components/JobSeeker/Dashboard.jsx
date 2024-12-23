@@ -7,6 +7,7 @@ const JobSeekerDashboard = () => {
     const [seeker, setSeeker] = useState(null);
     const [favoriteJobs, setFavoriteJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
+    const [appliedJobs, setAppliedJobs] = useState([]); // State to store applied jobs
     const [interviews, setInterviews] = useState([]); // State to store scheduled interviews
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -32,6 +33,7 @@ const JobSeekerDashboard = () => {
         if (seeker?.jsId) {
             fetchJobs();
             fetchFavoriteJobs(); // Fetch favorite jobs only after seeker is loaded
+            fetchAppliedJobs(); // Fetch applied jobs only after seeker is loaded
             fetchInterviews(); // Refetch interviews after seeker is loaded
         }
     }, [seeker]);
@@ -79,6 +81,17 @@ const JobSeekerDashboard = () => {
             if (savedFavorites) {
                 setFavoriteJobs(JSON.parse(savedFavorites));
             }
+        }
+    };
+
+    // Fetch applied jobs
+    const fetchAppliedJobs = async () => {
+        try {
+            const response = await axios.get(`http://localhost:9090/jobseeker/viewAppliedJobs/${seeker.jsId}`);
+            const appliedJobIds = response.data.map((job) => job.jobId); // Extract applied job IDs
+            setAppliedJobs(appliedJobIds);
+        } catch (err) {
+            console.error('Error fetching applied jobs:', err);
         }
     };
 
@@ -193,6 +206,7 @@ const JobSeekerDashboard = () => {
         try {
             await axios.post(`http://localhost:9090/jobseeker/applyForJob/${jobId}/${seeker.jsId}`);
             alert('Successfully applied for the job!');
+            setAppliedJobs((prev) => [...prev, jobId]); // Update applied jobs state
         } catch (err) {
             console.error('Error applying for job:', err);
             alert('Failed to apply for the job. Please try again.');
@@ -307,7 +321,7 @@ const JobSeekerDashboard = () => {
                                     >
                                         View Details
                                     </button>
-                                    {job.jobStatus=="OPEN" ? (
+                                    {appliedJobs.includes(job.jobId) ? (
                                         <span className="applied-text">Applied</span>
                                     ) : (
                                         <button

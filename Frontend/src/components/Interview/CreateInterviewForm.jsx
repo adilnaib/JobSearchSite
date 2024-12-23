@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import InterviewService from "./interviewService";
 import "./CreateInterviewForm.css";
 
-const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {
+const CreateInterviewForm = ({onInterviewCreated, jobApplicationId }) => {
   const [formData, setFormData] = useState({
     date: "",
     time: "",
@@ -51,7 +51,7 @@ const CreateInterviewForm = ({ onClose, onInterviewCreated }) => {
     if (!validateForm()) return;
 
     try {
-      const response = await InterviewService.createInterview(formData);
+      const response = await InterviewService.createInterview(formData, jobApplicationId);
       alert("Interview created successfully!");
       onInterviewCreated(response.data); // Notify parent of the new interview
       window.location.reload();
